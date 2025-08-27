@@ -6,6 +6,8 @@
     <title>Debate Certificate Generator</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
             --primary: #3f51b5;
@@ -170,6 +172,13 @@
             border: 20px solid #f0f0f0;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
             height: fit-content;
+            position: relative;
+        }
+        
+        .certificate.template2 {
+            border: 2px solid #e0e0e0;
+            background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
         
         .certificate-header {
@@ -252,18 +261,113 @@
             margin-top: 20px;
         }
         
-        .material-picker {
+        .template-options {
             display: flex;
-            align-items: center;
-            gap: 10px;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .template-option {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid var(--divider);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .template-option:hover {
+            border-color: var(--primary);
+        }
+        
+        .template-option.active {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+        }
+        
+        .template-option img {
+            max-width: 100%;
+            border: 1px solid #eee;
             margin-top: 10px;
         }
         
-        .material-color {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
+        .qr-options {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .qr-preview {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .certificate-qr {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+        }
+        
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .toggle-text {
+            margin-left: 10px;
+            font-weight: 500;
+        }
+        
+        /* Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
             cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
         }
     </style>
 </head>
@@ -272,6 +376,22 @@
         <div class="left-panel">
             <div class="panel">
                 <h2><i class="fas fa-sliders-h"></i> Certificate Customization</h2>
+                
+                <div class="form-group">
+                    <label>Certificate Template</label>
+                    <div class="template-options">
+                        <div class="template-option active" data-template="1">
+                            <i class="fas fa-certificate fa-2x"></i>
+                            <div>Classic</div>
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjcwIiB2aWV3Qm94PSIwIDAgMTAwIDcwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iNzAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2UwZTBlMCIgc3Ryb2tlLXdpZHRoPSIyIi8+PHBhdGggZD0iTTIwIDEwVjYwTTgwIDEwVjYwTTM1IDEwVjYwTTY1IDEwVjYwIiBzdHJva2U9IiNlMGUwZTAiIHN0cm9rZS13aWR0aD0iMSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iMzUiIHI9IjEwIiBmaWxsPSIjM2Y1MWI1Ii8+PC9zdmc+" alt="Classic Template">
+                        </div>
+                        <div class="template-option" data-template="2">
+                            <i class="fas fa-award fa-2x"></i>
+                            <div>Modern</div>
+                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjcwIiB2aWV3Qm94PSIwIDAgMTAwIDcwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHg9IjEiIHk9IjEiIHdpZHRoPSI5OCIgaGVpZ2h0PSI2OCIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjZjVmNWY1IiBzdHJva2Utd2lkdGg9IjIiIHJ4PSI0IiByeT0iNCIvPjxwYXRoIGQ9Ik0xMCAxNUg5ME0xMCAyNUg5ME0xMCAzNUg5ME0xMCA0NUg5ME0xMCA1NUg5MCIgc3Ryb2tlPSIjZjVmNWY1IiBzdHJva2Utd2lkdGg9IjIiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjM1IiByPSI4IiBmaWxsPSIjZmY0MDgxIi8+PC9zdmc+" alt="Modern Template">
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="form-group">
                     <label for="studentName">Student Name</label>
@@ -354,6 +474,36 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="qr-options">
+                    <div class="toggle-container">
+                        <label class="switch">
+                            <input type="checkbox" id="qrToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span class="toggle-text">Include QR Code</span>
+                    </div>
+                    
+                    <div id="qrOptions">
+                        <div class="form-group">
+                            <label for="qrText">QR Code Content</label>
+                            <input type="text" id="qrText" placeholder="Enter text or URL for QR code" value="https://example.com/verify-certificate">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="qrSize">QR Code Size</label>
+                            <select id="qrSize">
+                                <option value="80">Small</option>
+                                <option value="100" selected>Medium</option>
+                                <option value="120">Large</option>
+                            </select>
+                        </div>
+                        
+                        <div class="qr-preview">
+                            <div id="qrCode"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <button class="btn-generate" id="generatePdf"><i class="fas fa-file-pdf"></i> Generate PDF Certificate</button>
@@ -390,6 +540,8 @@
                         <p>School Principal</p>
                     </div>
                 </div>
+                
+                <div id="certQrCode" class="certificate-qr"></div>
             </div>
             
             <div class="actions">
@@ -400,6 +552,9 @@
     </div>
 
     <script>
+        // Initialize jsPDF
+        const { jsPDF } = window.jspdf;
+        
         document.addEventListener('DOMContentLoaded', function() {
             // Get DOM elements
             const studentNameInput = document.getElementById('studentName');
@@ -413,8 +568,16 @@
             const uploadLogoBtn = document.getElementById('uploadLogoBtn');
             const logoPreview = document.getElementById('logoPreview');
             const certLogo = document.getElementById('certLogo');
+            const templateOptions = document.querySelectorAll('.template-option');
+            const qrToggle = document.getElementById('qrToggle');
+            const qrOptions = document.getElementById('qrOptions');
+            const qrText = document.getElementById('qrText');
+            const qrSize = document.getElementById('qrSize');
+            const qrCodeElement = document.getElementById('qrCode');
+            const certQrCode = document.getElementById('certQrCode');
             
             // Certificate display elements
+            const certificateElement = document.getElementById('certificate');
             const certStudentName = document.getElementById('certStudentName');
             const certSchoolName = document.getElementById('certSchoolName');
             const certDebateTopic = document.getElementById('certDebateTopic');
@@ -426,6 +589,10 @@
             const generatePdfBtn = document.getElementById('generatePdf');
             const printCertificateBtn = document.getElementById('printCertificate');
             const shareCertificateBtn = document.getElementById('shareCertificate');
+            
+            // Initialize QR code
+            let qrCode = null;
+            initializeQrCode();
             
             // Set current date as default if empty
             if (!dateInput.value) {
@@ -443,6 +610,17 @@
             debateTopicInput.addEventListener('input', updateCertificate);
             dateInput.addEventListener('input', updateCertificate);
             customMessageInput.addEventListener('input', updateCertificate);
+            qrText.addEventListener('input', updateQrCode);
+            qrSize.addEventListener('change', updateQrCode);
+            
+            // Handle template selection
+            templateOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    templateOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    updateCertificate();
+                });
+            });
             
             // Handle highlight selection
             highlightOptions.forEach(option => {
@@ -462,6 +640,15 @@
                     this.classList.add('active');
                     updateCertificate();
                 });
+            });
+            
+            // Handle QR code toggle
+            qrToggle.addEventListener('change', function() {
+                qrOptions.style.display = this.checked ? 'block' : 'none';
+                certQrCode.style.display = this.checked ? 'block' : 'none';
+                if (this.checked) {
+                    updateQrCode();
+                }
             });
             
             // Handle logo upload
@@ -486,15 +673,50 @@
                 window.print();
             });
             
-            // Share certificate (basic implementation)
+            // Share certificate
             shareCertificateBtn.addEventListener('click', function() {
                 alert('Sharing functionality would be implemented here. In a real application, this would allow sharing the certificate via email or social media.');
             });
             
-            // Generate PDF (basic implementation)
+            // Generate PDF
             generatePdfBtn.addEventListener('click', function() {
-                alert('PDF generation would be implemented here. In a real application, this would generate and download a PDF version of the certificate.');
+                generatePDF();
             });
+            
+            // Initialize QR code
+            function initializeQrCode() {
+                if (qrCode) {
+                    qrCode.clear();
+                    qrCode.makeCode(qrText.value);
+                } else {
+                    qrCode = new QRCode(qrCodeElement, {
+                        text: qrText.value,
+                        width: parseInt(qrSize.value),
+                        height: parseInt(qrSize.value),
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                }
+                
+                // Also create QR code for certificate
+                certQrCode.innerHTML = '';
+                new QRCode(certQrCode, {
+                    text: qrText.value,
+                    width: 80,
+                    height: 80,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }
+            
+            // Update QR code
+            function updateQrCode() {
+                if (qrToggle.checked) {
+                    initializeQrCode();
+                }
+            }
             
             // Update certificate function
             function updateCertificate() {
@@ -520,6 +742,94 @@
                 // Update highlight background with a lighter version of the primary color
                 certHighlight.style.backgroundColor = shadeColor(primaryColor, 85);
                 certHighlight.style.color = primaryColor;
+                
+                // Update template
+                const selectedTemplate = document.querySelector('.template-option.active').dataset.template;
+                if (selectedTemplate === '1') {
+                    certificateElement.className = 'certificate';
+                    certificateElement.style.border = '20px solid #f0f0f0';
+                } else {
+                    certificateElement.className = 'certificate template2';
+                    certificateElement.style.border = '2px solid #e0e0e0';
+                }
+            }
+            
+            // Generate PDF function
+            function generatePDF() {
+                // Create a new jsPDF instance
+                const doc = new jsPDF('landscape', 'px', 'a4');
+                
+                // Get certificate element
+                const certificate = document.getElementById('certificate');
+                
+                // Use html2canvas (not included here, but would be in a real implementation)
+                // For now, we'll create a simple PDF representation
+                
+                // Set background color
+                doc.setFillColor(255, 255, 255);
+                doc.rect(0, 0, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight(), 'F');
+                
+                // Add title
+                doc.setFontSize(32);
+                doc.setFont('Playfair Display', 'bold');
+                doc.setTextColor(63, 81, 181);
+                doc.text('Certificate of Achievement', 280, 60, { align: 'center' });
+                
+                // Add subtitle
+                doc.setFontSize(18);
+                doc.setTextColor(117, 117, 117);
+                doc.text('in Debate and Public Speaking', 280, 85, { align: 'center' });
+                
+                // Add content
+                doc.setFontSize(16);
+                doc.setTextColor(33, 33, 33);
+                doc.text('This certificate is proudly presented to', 280, 120, { align: 'center' });
+                
+                // Add student name
+                doc.setFontSize(24);
+                doc.setTextColor(63, 81, 181);
+                doc.text(studentNameInput.value, 280, 150, { align: 'center' });
+                
+                // Add school name
+                doc.setFontSize(16);
+                doc.setTextColor(33, 33, 33);
+                doc.text(`from ${schoolNameInput.value}`, 280, 180, { align: 'center' });
+                
+                // Add debate topic
+                doc.text('for participation in the', 280, 210, { align: 'center' });
+                doc.setFontSize(18);
+                doc.setTextColor(63, 81, 181);
+                doc.text(debateTopicInput.value, 280, 235, { align: 'center' });
+                
+                // Add custom message
+                doc.setFontSize(16);
+                doc.setTextColor(33, 33, 33);
+                const splitMessage = doc.splitTextToSize(customMessageInput.value, 400);
+                doc.text(splitMessage, 280, 265, { align: 'center' });
+                
+                // Add highlight
+                const selectedHighlight = document.querySelector('.highlight-option.active').dataset.value;
+                doc.setFontSize(20);
+                doc.setTextColor(63, 81, 181);
+                doc.text(`Excellence in ${selectedHighlight}`, 280, 310, { align: 'center' });
+                
+                // Add date
+                doc.setFontSize(16);
+                doc.setTextColor(33, 33, 33);
+                doc.text(`Awarded on this ${dateInput.value}`, 280, 340, { align: 'center' });
+                
+                // Add signatures
+                doc.setFontSize(14);
+                doc.text('Debate Coach', 150, 390, { align: 'center' });
+                doc.text('School Principal', 410, 390, { align: 'center' });
+                
+                // Add lines for signatures
+                doc.setLineWidth(1);
+                doc.line(120, 400, 180, 400);
+                doc.line(380, 400, 440, 400);
+                
+                // Save the PDF
+                doc.save('Debate_Certificate.pdf');
             }
             
             // Helper function to lighten/darken colors
@@ -552,5 +862,4 @@
         });
     </script>
 </body>
-  
 </html>
