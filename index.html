@@ -3,158 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Certificate Generator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500;700&family=Cormorant+Garamond:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <title>Dynamic Certificate Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Pinyon+Script&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="left-panel">
+    <div class="container" id="container">
+        <div class="left-panel" id="left-panel">
+            <h1>Certificate Generator</h1>
+            
             <div class="panel">
-                <h2><i class="fas fa-sliders-h"></i> Certificate Customization</h2>
-                
+                <h3>General Information</h3>
                 <div class="form-group">
-                    <label>Certificate Template</label>
-                    <div class="template-options">
-                        <div class="template-option active" data-template="1">
-                            <i class="fas fa-certificate fa-2x"></i>
-                            <div>Generic</div>
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjcwIiB2aWV3Qm94PSIwIDAgMTAwIDcwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iNzAiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2UwZTBlMCIgc3Ryb2tlLXdpZHRoPSIyIi8+PHBhdGggZD0iTTIwIDEwVjYwTTgwIDEwVjYwTTM1IDEwVjYwTTY1IDEwVjYwIiBzdHJva2U9IiNlMGUwZTAiIHN0cm9rZS13aWR0aD0iMSIvPjxjaXJjbGUgY3g9IjUwIiBjeT0iMzUiIHI9IjEwIiBmaWxsPSIjM2Y1MWI1Ii8+PC9zdmc+" alt="Generic Template">
-                        </div>
-                        <div class="template-option" data-template="2">
-                            <i class="fas fa-award fa-2x"></i>
-                            <div>Dynamic</div>
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjcwIiB2aWV3Qm94PSIwIDAgMTAwIDcwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHg9IjEiIHk9IjEiIHdpZHRoPSI5OCIgaGVpZ2h0PSI2OCIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjZjVmNWY1IiBzdHJva2Utd2lkdGg9IjIiIHJ4PSI0IiByeT0iNCIvPjxwYXRoIGQ9Ik0xMCAxNUg5ME0xMCAyNUg5ME0xMCAzNUg5ME0xMCA0NUg5ME0xMCA1NUg5MCIgc3Ryb2tlPSIjZjVmNWY1IiBzdHJva2Utd2lkdGg9IjIiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjM1IiByPSI4IiBmaWxsPSIjZmY0MDgxIi8+PC9zdmc+" alt="Dynamic Template">
-                        </div>
-                    </div>
+                    <label for="schoolName">School / Organization Name</label>
+                    <input type="text" id="schoolName" value="DELHI SECONDARY SCHOOL">
                 </div>
-                
-                <div class="form-group" id="studentName-group">
-                    <label for="studentName">Student Name</label>
-                    <input type="text" id="studentName" placeholder="Enter student's name" value="Alex Johnson">
+                <div class="form-group">
+                    <label for="eventName">Event Name</label>
+                    <input type="text" id="eventName" value="Annual Inter-School Debate Championship">
                 </div>
-                
-                <div class="form-group" id="schoolName-group">
-                    <label for="schoolName">School/Organization Name</label>
-                    <input type="text" id="schoolName" placeholder="Enter school/organization name" value="Lincoln High School">
-                </div>
-                
-                <div class="form-group" id="debateTopic-group">
-                    <label for="debateTopic">Debate Topic/Event</label>
-                    <input type="text" id="debateTopic" placeholder="Enter debate topic or event" value="Annual Inter-School Debate Championship">
-                </div>
-                
-                <div class="form-group" id="date-group">
-                    <label for="date">Date</label>
-                    <input type="text" id="date" placeholder="Enter date" value="June 15, 2023">
-                </div>
-                
-                <div class="form-group" id="customMessage-group">
-                    <label for="customMessage">Custom Message</label>
-                    <textarea id="customMessage" rows="3" placeholder="Enter a custom message">For demonstrating exceptional skills in debate and contributing to the success of your team.</textarea>
-                </div>
-                
-                <div class="form-group" id="highlight-group">
+            </div>
+
+            <div class="panel">
+                <h3>Highlight Skills</h3>
+                <div class="form-group">
                     <label>Select Highlight</label>
-                    <div class="highlight-options">
-                        <div class="highlight-option active" data-value="Presentation Skills" data-description="(voice, confidence, eye contact, body language)">Presentation Skills</div>
-                        <div class="highlight-option" data-value="Refutation / Counter-Arguments" data-description="(ability to respond to opposition)">Refutation / Counter-Arguments</div>
-                        <div class="highlight-option" data-value="Teamwork & Time Management" data-description="(equal participation, staying within time)">Teamwork & Time Management</div>
-                        <div class="highlight-option" data-value="Creativity & Critical Thinking" data-description="(original points, connections to real life or school context)">Creativity & Critical Thinking</div>
-                        <div class="highlight-option" data-value="Content / Relevance" data-description="(facts, examples, case studies, use of curriculum topics)">Content / Relevance</div>
-                        <div class="highlight-option" data-value="Clarity & Organization" data-description="(logical flow, structure, clear arguments)">Clarity & Organization</div>
+                    <div class="highlight-options" id="highlightOptions">
+                        </div>
+                </div>
+                <div class="form-group">
+                    <label for="highlightAttributes">Attributes</label>
+                    <textarea id="highlightAttributes" placeholder="Describe specific attributes or achievements"></textarea>
+                </div>
+                <div id="addHighlightForm" class="add-highlight-form hidden">
+                    <h4>Add New Highlight</h4>
+                    <input type="text" id="newHighlightText" placeholder="Highlight Text (e.g., Teamwork)">
+                    <input type="text" id="newHighlightAttributes" placeholder="Attributes (e.g., COLLABORATION)">
+                    <div class="form-actions">
+                        <button id="saveHighlightBtn">Save</button>
+                        <button id="cancelHighlightBtn" type="button">Cancel</button>
                     </div>
                 </div>
             </div>
-            
+
             <div class="panel">
-                <h2><i class="fas fa-palette"></i> Design Options</h2>
-                
+                <h3>Design & Colors</h3>
                 <div class="form-group">
-                    <label>Primary Color</label>
-                    <div class="color-options">
-                        <div class="color-option active" style="background-color: #3f51b5;" data-color="#3f51b5"></div>
-                        <div class="color-option" style="background-color: #009688;" data-color="#009688"></div>
-                        <div class="color-option" style="background-color: #ff5722;" data-color="#ff5722"></div>
-                        <div class="color-option" style="background-color: #673ab7;" data-color="#673ab7"></div>
-                        <div class="color-option" style="background-color: #e91e63;" data-color="#e91e63"></div>
-                        <div class="color-option" style="background-color: #00bcd4;" data-color="#00bcd4"></div>
-                        <div class="color-option" style="background-color: #ff9800;" data-color="#ff9800"></div>
-                        <div class="color-option" style="background-color: #4caf50;" data-color="#4caf50"></div>
-                    </div>
+                    <label>Border & Title Color</label>
+                    <div class="color-options" id="borderColorOptions"></div>
                 </div>
-                
                 <div class="form-group">
-                    <label>Accent Color</label>
-                    <div class="color-options">
-                        <div class="color-option active" style="background-color: #ff4081;" data-color="#ff4081"></div>
-                        <div class="color-option" style="background-color: #ffc107;" data-color="#ffc107"></div>
-                        <div class="color-option" style="background-color: #8bc34a;" data-color="#8bc34a"></div>
-                        <div class="color-option" style="background-color: #9c27b0;" data-color="#9c27b0"></div>
-                        <div class="color-option" style="background-color: #f44336;" data-color="#f44336"></div>
-                        <div class="color-option" style="background-color: #03a9f4;" data-color="#03a9f4"></div>
-                        <div class="color-option" style="background-color: #cddc39;" data-color="#cddc39"></div>
-                        <div class="color-option" style="background-color: #ffeb3b;" data-color="#ffeb3b"></div>
-                    </div>
+                    <label>Accent Shape Color</label>
+                    <div class="color-options" id="shapeColorOptions"></div>
                 </div>
-                
+                <div class="form-group">
+                    <label>Subtitle Color</label>
+                    <div class="color-options" id="subtitleColorOptions"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>Extras</h3>
                 <div class="form-group">
                     <label for="logoUpload">Organization Logo</label>
                     <div class="logo-upload">
-                        <div class="logo-preview">
-                            <img id="logoPreview" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjZjVmNWY1Ii8+CjxwYXRoIGQ9Ik00MCAxMEM0Ny45NTY1IDEwIDU0Ljg3OSAxNC4zMzc0IDU4LjU2NyAyMC42NjY3TDUwIDM1SDY4LjMzM0M2Ni40NDYgNDUuMDgzMyA1NC4xMDkgNTMgNDAgNTNDMjUuODkxIDUzIDEzLjU1NCA0NS4wODMzIDExLjY2NyAzNUgyOUw0MCAxMFoiIGZpbGw9IiNjNWNhZTkiLz4KPHBhdGggZD0iTTQwIDEwVjM1TDMxLjY2NyAyMC42NjZDMzUuMzU1NyAxNC4zMzc0IDQyLjA0MzUgMTAgNDAgMTBaIiBmaWxsPSIjM2Y1MWI1Ii8+Cjwvc3ZnPgo=" alt="Logo Preview">
-                        </div>
-                        <div>
-                            <input type="file" id="logoUpload" accept="image/*" style="display: none;">
-                            <button type="button" id="uploadLogoBtn"><i class="fas fa-upload"></i> Upload Logo</button>
-                        </div>
+                        <div class="logo-preview"><img id="logoPreview" src="https://i.ibb.co/bF03NC6/logo-removebg-preview.png" alt="Logo Preview"></div>
+                        <input type="file" id="logoUpload" accept="image/*" class="hidden">
+                        <button type="button" id="uploadLogoBtn"><i class="fas fa-upload"></i> Upload Logo</button>
                     </div>
                 </div>
-                
-                <div class="qr-options">
-                    <div class="toggle-container">
-                        <label class="switch">
-                            <input type="checkbox" id="qrToggle" checked>
-                            <span class="slider"></span>
-                        </label>
-                        <span class="toggle-text">Include QR Code</span>
-                    </div>
-                    
-                    <div id="qrOptions">
-                        <div class="form-group">
-                            <label for="qrText">QR Code Content</label>
-                            <input type="text" id="qrText" placeholder="Enter text or URL for QR code" value="https://example.com/verify-certificate">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="qrSize">QR Code Size</label>
-                            <select id="qrSize">
-                                <option value="80">Small</option>
-                                <option value="100" selected>Medium</option>
-                                <option value="120">Large</option>
-                            </select>
-                        </div>
-                        
-                        <div class="qr-preview">
-                            <div id="qrCode"></div>
-                        </div>
-                    </div>
+                <div class="form-group qr-toggle-group">
+                    <label for="qrToggle">Include QR Code</label>
+                    <input type="checkbox" id="qrToggle" class="toggle-switch" checked>
+                </div>
+                <div id="qrOptions" class="qr-options hidden">
+                     <label for="qrText">QR Code Content / URL</label>
+                     <input type="text" id="qrText" readonly>
                 </div>
             </div>
-            
-            <button class="btn-generate" id="generatePdf"><i class="fas fa-file-pdf"></i> Generate PDF Certificate</button>
+
+            <button class="btn-generate" id="generatePdf"><i class="fas fa-file-pdf"></i> Generate PDF</button>
         </div>
-        
-        <div class="right-panel">
-            <div class="certificate" id="certificate">
-                <!-- Certificate content will be dynamically updated by script.js -->
+
+        <div class="right-panel" id="right-panel">
+            <div class="certificate-wrapper">
+                <div class="certificate" id="certificate">
+                    </div>
             </div>
-            
             <div class="actions">
-                <button id="printCertificate"><i class="fas fa-print"></i> Print Certificate</button>
+                <button id="printCertificate"><i class="fas fa-print"></i> Print</button>
                 <button id="shareCertificate"><i class="fas fa-share-alt"></i> Share</button>
             </div>
         </div>
