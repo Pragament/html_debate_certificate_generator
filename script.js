@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Application State
   let state = {
     schoolName: "DELHI SECONDARY SCHOOL",
-    eventName: "Annual Inter-School Debate Championship",
+    eventName: "Debate",
     highlight: {
       id: 1,
       text: "Presentation Skills",
@@ -98,8 +98,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     const encodedData = btoa(JSON.stringify(shareData));
     const shareableLink = `${window.location.origin}${window.location.pathname}?cert=${encodedData}`;
-    state.qr.text = shareableLink;
-    ui.qrText.value = shareableLink;
+    state.qr.text = ui.qrText.value;
+    //ui.qrText.value = shareableLink;
   }
 
   function loadCertificateFromUrl() {
@@ -150,13 +150,13 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="cert-footer">
                 <div class="cert-signature-area"><div class="signature-line"></div><p>School Principal</p></div>
-                ${qr.enabled ? `<div class="cert-qr-area"><div class="cert-qr-code" id="certQrCode"></div><p>Scan the QR to download digitally.</p></div>` : '<div class="cert-qr-area"></div>'}
+                ${qr.enabled ? `<div class="cert-qr-area"><div class="cert-qr-code" id="certQrCode"></div><p class="hidden">Scan the QR to verify digitally.</p></div>` : '<div class="cert-qr-area"></div>'}
             </div>
         </div>`;
     if (qr.enabled && qr.text) {
       const qrCodeEl = document.getElementById("certQrCode");
       qrCodeEl.innerHTML = '';
-      new QRCode(qrCodeEl, { text: qr.text, width: 100, height: 100 });
+      new QRCode(qrCodeEl, { text: qr.text, width: 140, height: 140 });
     }
   }
 
