@@ -34,9 +34,6 @@ body {
 }
 
 /* --- Left Panel Controls --- */
-.left-panel {
-    /* Removed overflow-y, max-height, and padding-right to allow natural height */
-}
 .left-panel h1 {
     font-family: var(--font-serif);
     text-align: center;
@@ -45,11 +42,8 @@ body {
     font-weight: 700;
 }
 .panel {
-    background-color: var(--panel-bg);
-    border-radius: 8px;
-    padding: 0;
-    margin-bottom: 1.5rem;
     background: none;
+    margin-bottom: 1.5rem;
 }
 .panel h3 {
     font-family: var(--font-serif);
@@ -131,10 +125,10 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 /* Extras Section */
-.logo-upload { display: flex; align-items: center; gap: 1rem; }
-.logo-preview { width: 60px; height: 60px; border: 1px dashed var(--border-color); display: grid; place-items: center; overflow: hidden; border-radius: 6px; }
-.logo-preview img { max-width: 100%; max-height: 100%; }
-#uploadLogoBtn {
+.logo-upload, .signature-upload { display: flex; align-items: center; gap: 1rem; }
+.logo-preview, .signature-preview { width: 60px; height: 60px; border: 1px dashed var(--border-color); display: grid; place-items: center; overflow: hidden; border-radius: 6px; }
+.logo-preview img, .signature-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
+#uploadLogoBtn, #uploadSignatureBtn {
     flex-grow: 1;
     padding: 0.75rem;
     background-color: var(--light-gray-bg);
@@ -143,33 +137,8 @@ textarea { resize: vertical; min-height: 80px; }
     color: var(--text-secondary);
     font-weight: 500;
 }
-.qr-toggle-group { display: flex; align-items: center; justify-content: space-between; }
-.toggle-switch {
-    width: 50px;
-    height: 28px;
-    position: relative;
-    appearance: none;
-    background: var(--light-gray-border);
-    border-radius: 28px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-.toggle-switch::before {
-    content: '';
-    position: absolute;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: white;
-    top: 3px;
-    left: 4px;
-    transition: 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-.toggle-switch:checked { background: var(--accent-color); }
-.toggle-switch:checked::before { transform: translateX(21px); }
+
 .hidden { display: none; }
-.qr-options { margin-top: 1rem; }
 .add-highlight-form { border-top: 1px solid var(--border-color); margin-top: 1rem; padding-top: 1rem; }
 .add-highlight-form .form-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
 
@@ -184,14 +153,10 @@ textarea { resize: vertical; min-height: 80px; }
     border-radius: 6px;
     border: none;
     cursor: pointer;
-    margin-top: 2rem; /* Added to give space from the last panel */
+    margin-top: 2rem;
 }
 .btn-generate:hover { background-color: #6B2E0E; }
-.actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 0; /* Removed extra top margin as certificate-wrapper now has margin-bottom */
-}
+.actions { display: flex; gap: 1rem; }
 .actions button {
     flex-grow: 1;
     padding: 0.75rem;
@@ -205,18 +170,13 @@ textarea { resize: vertical; min-height: 80px; }
 .actions button:hover { background-color: var(--light-gray-bg); }
 
 /* --- Right Panel & Certificate --- */
-.right-panel {
-    display: flex;
-    flex-direction: column;
-    /* Removed flex-grow: 1; so it doesn't stretch */
-}
+.right-panel { display: flex; flex-direction: column; }
 .certificate-wrapper {
     background: white;
     padding: 1.5rem;
     box-shadow: 0 10px 30px rgba(0,0,0,0.07);
     border-radius: 8px;
-    /* Removed flex-grow: 1; */
-    margin-bottom: 1.5rem; /* Added consistent space below certificate */
+    margin-bottom: 1.5rem;
 }
 .certificate {
     background-color: #ffffff;
@@ -225,31 +185,91 @@ textarea { resize: vertical; min-height: 80px; }
     position: relative;
     overflow: hidden;
     display: flex;
-    justify-content: center;
-    align-items: center;
     text-align: center;
-    padding: 5%;
-    --cert-border-color: #B89B4E;
-    --cert-shape-color: #3A8D4A;
-    --cert-subtitle-color: #D1A74F;
+    padding: 4%;
+    --cert-border-color: #2c3e50;
+    --cert-shape-color: #D4AF37;
+    --cert-subtitle-color: #7f8c8d;
     --cert-primary-text-color: #1a1a1a;
 }
-.cert-border { position: absolute; top: 2.5%; left: 2.5%; right: 2.5%; bottom: 2.5%; border: 4px double var(--cert-border-color); z-index: 1; }
-.cert-content { position: relative; z-index: 2; width: 100%; }
-.cert-header { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-bottom: 2%; }
-.cert-logo { max-width: 8%; }
-.cert-school-name { font-size: 2.2vw; font-weight: 700; color: var(--cert-shape-color); }
+.cert-border { 
+    position: absolute; 
+    top: 2.5%; left: 2.5%; right: 2.5%; bottom: 2.5%; 
+    border: 4px double var(--cert-border-color); 
+    z-index: 1; 
+}
+.cert-content { 
+    z-index: 2; 
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* START: KEY CHANGE HERE */
+    padding-bottom: 15%; /* This creates the invisible buffer for the footer */
+    /* END: KEY CHANGE */
+}
+.cert-header { 
+    width: 100%;
+    display: flex; 
+    justify-content: center;
+    align-items: center; 
+    gap: 1rem; 
+    flex-shrink: 0; 
+}
+.cert-logo { max-width: 15%; height: auto; object-fit: contain; } 
+.cert-school-name { 
+    font-size: 2.2vw; 
+    font-weight: 700; 
+    color: var(--cert-shape-color); 
+    text-align: left; 
+    line-height: 1.2; 
+    flex-grow: 1; 
+}
+.cert-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 0;
+}
 .cert-title { font-size: 1.8vw; font-weight: 600; letter-spacing: 2px; margin-bottom: 0; color: var(--cert-border-color); }
-.cert-subtitle { font-size: 1.1vw; font-weight: 600; color: var(--cert-subtitle-color); margin-bottom: 4%; }
+.cert-subtitle { font-size: 1.1vw; font-weight: 600; color: var(--cert-subtitle-color); margin-bottom: 2%; }
 .cert-event-name { font-size: 1.1vw; margin-bottom: 2%; }
 .cert-highlight-script { font-family: var(--font-script); font-size: 4vw; line-height: 1; color: var(--cert-primary-text-color); margin-bottom: 1%; }
 .cert-highlight-attrs { font-size: 0.9vw; letter-spacing: 1px; margin-bottom: 4%; }
-.cert-concluding-message { font-size: 1.1vw; margin-bottom: 5%; }
-.cert-footer { display: flex; justify-content: space-between; align-items: flex-end; width: 80%; margin: 0 auto; }
-.cert-signature-area, .cert-qr-area { flex-basis: 40%; }
-.signature-line { border-bottom: 1px solid #1a1a1a; width: 60%; margin: 0 auto 0.5rem auto; }
-.cert-qr-area p { font-size: 0.8vw; }
-.cert-qr-code { width: 10vw; max-width: 100px; margin: 0 auto; }
+.cert-concluding-message { font-size: 1.1vw; }
+
+.cert-footer { 
+    position: absolute;
+    z-index: 3;
+    bottom: 6%;
+    left: 8%;
+}
+.cert-signature-area { 
+    text-align: center;
+}
+.cert-signature-img {
+    display: block;
+    max-width: 10vw; 
+    max-height: 5vw;
+    width: auto; 
+    height: auto; 
+    object-fit: contain; 
+    margin: 0 auto 0.5rem auto; 
+}
+.signature-line { 
+    border-bottom: 1px solid #1a1a1a; 
+    width: 100%;
+    max-width: 180px;
+    margin: 0.5rem auto; 
+}
+.cert-signature-area p {
+    margin: 0;
+    font-size: 1vw;
+}
 
 /* Print Styles */
 @media print {

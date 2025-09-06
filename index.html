@@ -26,7 +26,7 @@
                 </div>
                 <div class="form-group">
                     <label for="eventName">Event Name</label>
-                    <input type="text" id="eventName" value="Annual Inter-School Debate Championship">
+                    <input type="text" id="eventName" value="Debate">
                 </div>
             </div>
 
@@ -35,7 +35,7 @@
                 <div class="form-group">
                     <label>Select Highlight</label>
                     <div class="highlight-options" id="highlightOptions">
-                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="highlightAttributes">Attributes</label>
@@ -78,15 +78,15 @@
                         <button type="button" id="uploadLogoBtn"><i class="fas fa-upload"></i> Upload Logo</button>
                     </div>
                 </div>
-                <div class="form-group qr-toggle-group">
-                    <label for="qrToggle">Include QR Code</label>
-                    <input type="checkbox" id="qrToggle" class="toggle-switch" checked>
+                <div class="form-group">
+                    <label for="signatureUpload">Signature</label>
+                    <div class="signature-upload">
+                        <div class="signature-preview"><img id="signaturePreview" src="" alt="Signature Preview" class="hidden"></div>
+                        <input type="file" id="signatureUpload" accept="image/*" class="hidden">
+                        <button type="button" id="uploadSignatureBtn"><i class="fas fa-upload"></i> Upload Signature</button>
+                    </div>
                 </div>
-                <div id="qrOptions" class="qr-options hidden">
-                     <label for="qrText">QR Code Content / URL</label>
-                     <input type="text" id="qrText" readonly>
                 </div>
-            </div>
 
             <button class="btn-generate" id="generatePdf"><i class="fas fa-file-pdf"></i> Generate PDF</button>
         </div>
@@ -94,7 +94,7 @@
         <div class="right-panel" id="right-panel">
             <div class="certificate-wrapper">
                 <div class="certificate" id="certificate">
-                    </div>
+                </div>
             </div>
             <div class="actions">
                 <button id="printCertificate"><i class="fas fa-print"></i> Print</button>

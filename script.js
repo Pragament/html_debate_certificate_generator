@@ -6,28 +6,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // DOM Element References
   const ui = {
-    // Inputs
     schoolName: document.getElementById("schoolName"),
     eventName: document.getElementById("eventName"),
     highlightAttributes: document.getElementById("highlightAttributes"),
     logoUpload: document.getElementById("logoUpload"),
-    qrToggle: document.getElementById("qrToggle"),
-    qrText: document.getElementById("qrText"),
-    // Dynamic Highlight Form
+    signatureUpload: document.getElementById("signatureUpload"),
     addHighlightForm: document.getElementById("addHighlightForm"),
     newHighlightText: document.getElementById("newHighlightText"),
     newHighlightAttributes: document.getElementById("newHighlightAttributes"),
-    // Buttons
     saveHighlightBtn: document.getElementById("saveHighlightBtn"),
     cancelHighlightBtn: document.getElementById("cancelHighlightBtn"),
     uploadLogoBtn: document.getElementById("uploadLogoBtn"),
+    uploadSignatureBtn: document.getElementById("uploadSignatureBtn"),
     generatePdfBtn: document.getElementById("generatePdf"),
     printCertificateBtn: document.getElementById("printCertificate"),
     shareCertificateBtn: document.getElementById("shareCertificate"),
-    // Containers
     certificate: document.getElementById("certificate"),
     logoPreview: document.getElementById("logoPreview"),
-    qrOptions: document.getElementById("qrOptions"),
+    signaturePreview: document.getElementById("signaturePreview"),
     highlightOptions: document.getElementById("highlightOptions"),
     borderColorOptions: document.getElementById("borderColorOptions"),
     shapeColorOptions: document.getElementById("shapeColorOptions"),
@@ -37,16 +33,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // Application State
   let state = {
     schoolName: "DELHI SECONDARY SCHOOL",
-    eventName: "Annual Inter-School Debate Championship",
+    eventName: "Debate",
     highlight: {
       id: 1,
       text: "Presentation Skills",
       attributes: "VOICE | CONFIDENCE | EYE CONTACT | BODY LANGUAGE",
     },
     logoSrc: "https://i.ibb.co/bF03NC6/logo-removebg-preview.png",
-    qr: { enabled: true, text: "" },
-    // START: UPDATED CODE
-    // Set a new default color scheme
+    signatureSrc: "",
     colors: { border: "#2c3e50", shape: "#D4AF37", subtitle: "#7f8c8d" },
     availableHighlights: [
       { id: 1, text: "Presentation Skills", attributes: "VOICE | CONFIDENCE | EYE CONTACT | BODY LANGUAGE" },
@@ -55,51 +49,30 @@ document.addEventListener("DOMContentLoaded", () => {
       { id: 4, text: "Communication", attributes: "CLARITY | PERSUASION | LISTENING" },
       { id: 5, text: "Problem Solving", attributes: "ANALYTICAL SKILLS | CREATIVITY | RESOURCEFULNESS" },
     ],
-    // Added more cohesive color palettes
     availableColors: {
-      border: [
-        "#2c3e50", // Midnight Blue
-        "#800000", // Maroon
-        "#004d40", // Dark Teal
-        "#D4AF37", // Classic Gold
-        "#343a40", // Dark Charcoal
-        "#8B4513", // SaddleBrown
-      ],
-      shape: [
-        "#D4AF37", // Classic Gold (pairs with blues, maroons)
-        "#e67e22", // Burnt Orange (pairs with teals, charcoals)
-        "#1abc9c", // Vibrant Turquoise
-        "#c09f80", // Muted Bronze (pairs with greens, blues)
-        "#3498db", // Bright Blue
-        "#990000", // Crimson Red
-      ],
-      subtitle: [
-        "#7f8c8d", // Greyish Cyan
-        "#95a5a6", // Light Grey
-        "#bdc3c7", // Lighter Grey
-        "#848482", // Warm Grey
-        "#d35400", // Pumpkin Orange
-        "#5d6d7e", // Slate Grey
-      ],
+      border: ["#2c3e50","#800000","#004d40","#D4AF37","#343a40","#8B4513"],
+      shape: ["#D4AF37","#e67e22","#1abc9c","#c09f80","#3498db","#990000"],
+      subtitle: ["#7f8c8d","#95a5a6","#bdc3c7","#848482","#d35400","#5d6d7e"],
     },
-    // END: UPDATED CODE
   };
 
-  function updateQrCodeLink() {
+  function getShareableLink() {
     const shareData = {
       schoolName: state.schoolName,
       eventName: state.eventName,
       highlight: state.highlight,
       colors: state.colors,
       logoSrc: state.logoSrc,
+      signatureSrc: state.signatureSrc,
     };
     if (shareData.logoSrc.startsWith('data:image')) {
       shareData.logoSrc = "https://i.ibb.co/bF03NC6/logo-removebg-preview.png";
     }
+    if (shareData.signatureSrc.startsWith('data:image')) {
+        shareData.signatureSrc = "";
+    }
     const encodedData = btoa(JSON.stringify(shareData));
-    const shareableLink = `${window.location.origin}${window.location.pathname}?cert=${encodedData}`;
-    state.qr.text = shareableLink;
-    ui.qrText.value = shareableLink;
+    return `${window.location.origin}${window.location.pathname}?cert=${encodedData}`;
   }
 
   function loadCertificateFromUrl() {
@@ -118,7 +91,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderApp() {
-    updateQrCodeLink();
     renderCertificatePreview();
     renderHighlightOptions();
     renderColorOptions();
@@ -126,20 +98,35 @@ document.addEventListener("DOMContentLoaded", () => {
     ui.eventName.value = state.eventName;
     ui.highlightAttributes.value = state.highlight.attributes;
     ui.logoPreview.src = state.logoSrc;
-    ui.qrOptions.classList.toggle('hidden', !state.qr.enabled);
+    if (state.signatureSrc) {
+        ui.signaturePreview.src = state.signatureSrc;
+        ui.signaturePreview.classList.remove('hidden');
+    } else {
+        ui.signaturePreview.src = "";
+        ui.signaturePreview.classList.add('hidden');
+    }
   }
 
   function renderCertificatePreview() {
-    const { schoolName, eventName, highlight, logoSrc, qr, colors } = state;
+    const { schoolName, eventName, highlight, logoSrc, signatureSrc, colors } = state;
     ui.certificate.style.setProperty("--cert-border-color", colors.border);
     ui.certificate.style.setProperty("--cert-shape-color", colors.shape);
     ui.certificate.style.setProperty("--cert-subtitle-color", colors.subtitle);
+    
     const eventText = `For Participation in the ${eventName} and demonstrating:`;
     const concludingText = `For demonstrating exceptional skills in ${eventName} and contributing to the success of your team.`;
+    
+    const signatureHtml = signatureSrc 
+        ? `<img src="${signatureSrc}" alt="Signature" class="cert-signature-img">` 
+        : `<div class="cert-signature-placeholder" style="height: 5vw;"></div>`;
+    
     ui.certificate.innerHTML = `
         <div class="cert-border"></div>
         <div class="cert-content">
-            <div class="cert-header"><img src="${logoSrc}" class="cert-logo" alt="School Logo"><div class="cert-school-name">${schoolName}</div></div>
+            <div class="cert-header">
+                <img src="${logoSrc}" class="cert-logo" alt="School Logo">
+                <div class="cert-school-name">${schoolName}</div>
+            </div>
             <div class="cert-body">
                 <h1 class="cert-title">CERTIFICATE</h1>
                 <h2 class="cert-subtitle">OF ACHIEVEMENT</h2>
@@ -148,16 +135,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 <p class="cert-highlight-attrs">${highlight.attributes}</p>
                 <p class="cert-concluding-message">${concludingText}</p>
             </div>
-            <div class="cert-footer">
-                <div class="cert-signature-area"><div class="signature-line"></div><p>School Principal</p></div>
-                ${qr.enabled ? `<div class="cert-qr-area"><div class="cert-qr-code" id="certQrCode"></div><p>Scan the QR to download digitally.</p></div>` : '<div class="cert-qr-area"></div>'}
+        </div>
+        <div class="cert-footer">
+            <div class="cert-signature-area">
+                ${signatureHtml} 
+                <div class="signature-line"></div>
+                <p>School Principal</p>
             </div>
         </div>`;
-    if (qr.enabled && qr.text) {
-      const qrCodeEl = document.getElementById("certQrCode");
-      qrCodeEl.innerHTML = '';
-      new QRCode(qrCodeEl, { text: qr.text, width: 100, height: 100 });
-    }
   }
 
   function renderHighlightOptions() {
@@ -173,12 +158,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function handleInputChange(e) {
-    const { id, value, checked } = e.target;
+    const { id, value } = e.target;
     switch (id) {
       case "schoolName": state.schoolName = value; break;
       case "eventName": state.eventName = value; break;
       case "highlightAttributes": state.highlight.attributes = value; break;
-      case "qrToggle": state.qr.enabled = checked; break;
     }
     renderApp();
   }
@@ -186,8 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function handlePanelClick(e) {
     const target = e.target;
     if (target.matches(".highlight-option") && target.dataset.id) {
-      const selectedId = parseInt(target.dataset.id);
-      state.highlight = structuredClone(state.availableHighlights.find(h => h.id === selectedId));
+      state.highlight = structuredClone(state.availableHighlights.find(h => h.id === parseInt(target.dataset.id)));
       renderApp();
     }
     if (target.matches("#addNewHighlightBtn")) {
@@ -203,16 +186,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function handleLogoUpload(e) {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        state.logoSrc = event.target.result;
-        renderApp();
-      };
-      reader.readAsDataURL(file);
-    }
+  function handleFileUpload(e, targetStateProperty) {
+      const file = e.target.files[0];
+      if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+              state[targetStateProperty] = event.target.result;
+              renderApp();
+          };
+          reader.readAsDataURL(file);
+      }
   }
   
   function saveNewHighlight() {
@@ -243,14 +226,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // Event Listeners
   document.getElementById("left-panel").addEventListener("input", handleInputChange);
   document.getElementById("left-panel").addEventListener("click", handlePanelClick);
-  ui.logoUpload.addEventListener("change", handleLogoUpload);
+  ui.logoUpload.addEventListener("change", (e) => handleFileUpload(e, 'logoSrc'));
+  ui.signatureUpload.addEventListener("change", (e) => handleFileUpload(e, 'signatureSrc'));
   ui.uploadLogoBtn.addEventListener("click", () => ui.logoUpload.click());
+  ui.uploadSignatureBtn.addEventListener("click", () => ui.signatureUpload.click());
   ui.cancelHighlightBtn.addEventListener("click", () => ui.addHighlightForm.classList.add('hidden'));
   ui.saveHighlightBtn.addEventListener("click", saveNewHighlight);
   ui.generatePdfBtn.addEventListener("click", generatePDF);
   ui.printCertificateBtn.addEventListener("click", () => window.print());
   ui.shareCertificateBtn.addEventListener("click", () => {
-      navigator.clipboard.writeText(state.qr.text).then(() => alert("Certificate link copied to clipboard!"), () => alert("Failed to copy link."));
+      const shareableLink = getShareableLink();
+      navigator.clipboard.writeText(shareableLink).then(() => {
+          alert("Certificate link copied to clipboard!");
+      }, () => {
+          alert("Failed to copy link.");
+      });
   });
 
   // Initial setup
