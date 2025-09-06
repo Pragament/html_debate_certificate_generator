@@ -21,6 +21,11 @@ body {
     color: var(--text-primary);
     padding: 2rem;
 }
+/* Ensure emojis inherit font size */
+span[role="img"], .cert-highlight-script, .cert-highlight-attrs {
+    font-size: inherit;
+    line-height: inherit;
+}
 .container {
     display: grid;
     grid-template-columns: 450px 1fr;
@@ -205,9 +210,7 @@ textarea { resize: vertical; min-height: 80px; }
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* START: KEY CHANGE HERE */
     padding-bottom: 15%; /* This creates the invisible buffer for the footer */
-    /* END: KEY CHANGE */
 }
 .cert-header { 
     width: 100%;

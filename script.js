@@ -30,24 +30,24 @@ document.addEventListener("DOMContentLoaded", () => {
     subtitleColorOptions: document.getElementById("subtitleColorOptions"),
   };
   
-  // Application State
+// Application State
   let state = {
     schoolName: "DELHI SECONDARY SCHOOL",
     eventName: "Debate",
     highlight: {
       id: 1,
-      text: "Presentation Skills",
-      attributes: "VOICE | CONFIDENCE | EYE CONTACT | BODY LANGUAGE",
+      text: "Presentation Skills 🖼️",
+      attributes: "VOICE 🎤 | CONFIDENCE 💪✨ | EYE CONTACT 👀 | BODY LANGUAGE 🧍‍♂️🧍‍♀️",
     },
     logoSrc: "https://i.ibb.co/bF03NC6/logo-removebg-preview.png",
     signatureSrc: "",
     colors: { border: "#2c3e50", shape: "#D4AF37", subtitle: "#7f8c8d" },
     availableHighlights: [
-      { id: 1, text: "Presentation Skills", attributes: "VOICE | CONFIDENCE | EYE CONTACT | BODY LANGUAGE" },
-      { id: 2, text: "Teamwork", attributes: "COLLABORATION | SUPPORT | RELIABILITY" },
-      { id: 3, text: "Leadership", attributes: "INITIATIVE | GUIDANCE | MOTIVATION" },
-      { id: 4, text: "Communication", attributes: "CLARITY | PERSUASION | LISTENING" },
-      { id: 5, text: "Problem Solving", attributes: "ANALYTICAL SKILLS | CREATIVITY | RESOURCEFULNESS" },
+      { id: 1, text: "Presentation Skills 🖼️", attributes: "VOICE 🎤 | CONFIDENCE 💪✨ | EYE CONTACT 👀 | BODY LANGUAGE 🧍‍♂️🧍‍♀️" },
+      { id: 2, text: "Teamwork 🤝", attributes: "COLLABORATION 👥 | SUPPORT 💖 | RELIABILITY ✅" },
+      { id: 3, text: "Leadership 🌟", attributes: "INITIATIVE 💡 | GUIDANCE 🧭 | MOTIVATION 🔥" },
+      { id: 4, text: "Communication 💬", attributes: "CLARITY 🗣️ | PERSUASION ✍️ | LISTENING 👂" },
+      { id: 5, text: "Problem Solving 🤔", attributes: "ANALYTICAL SKILLS 🧠 | CREATIVITY 🎨 | RESOURCEFULNESS 🛠️" },
     ],
     availableColors: {
       border: ["#2c3e50","#800000","#004d40","#D4AF37","#343a40","#8B4513"],
@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderHighlightOptions() {
     ui.highlightOptions.innerHTML = state.availableHighlights.map(h =>
-        `<button class="highlight-option ${h.id === state.highlight.id ? "active" : ""}" data-id="${h.id}">${h.text}</button>`
+        `<button class="highlight-option ${h.id === state.highlight.id ? "active" : ""}" data-id="${h.id}" style="white-space: nowrap;">${h.text}</button>`
       ).join("") + '<button class="highlight-option add-new" id="addNewHighlightBtn">+ Add New</button>';
   }
 
