@@ -225,18 +225,9 @@ textarea { resize: vertical; min-height: 80px; }
     font-size: 2.2vw; 
     font-weight: 700; 
     color: var(--cert-shape-color); 
-    text-align: left; 
+    text-align: center; /* Changed from 'left' to 'center' */
     line-height: 1.2; 
-    flex-grow: 1; 
-}
-.cert-body {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    padding: 1rem 0;
+    /* Removed: flex-grow: 1; */ 
 }
 .cert-title { font-size: 1.8vw; font-weight: 600; letter-spacing: 2px; margin-bottom: 0; color: var(--cert-border-color); }
 .cert-subtitle { font-size: 1.1vw; font-weight: 600; color: var(--cert-subtitle-color); margin-bottom: 2%; }
