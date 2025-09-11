@@ -7,12 +7,12 @@ import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.g
 // IMPORTANT: Replace with your actual Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDGR7_22NGtrfuwZUeSAxUcd4uo63PBis8",
-  authDomain: "certificate-generator-2ee96.firebaseapp.com",
-  projectId: "certificate-generator-2ee96",
-  storageBucket: "certificate-generator-2ee96.appspot.com",
-  messagingSenderId: "734521744235",
-  appId: "1:734521744235:web:e2f55e375bbe90b4bbca2e"
+  apiKey: "API_KEY",
+  authDomain: "AUTHDOMAIN",
+  projectId: "PROJECTID",
+  storageBucket: "STORAGEBUCKET",
+  messagingSenderId: "MESSAGINGSENDERID",
+  appId: "APIID"
 };
 try {
     // Initialize Firebase
