@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Award</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container" style="grid-template-columns: 1fr;">
+        <div class="panel" style="background: var(--panel-bg); padding: 1rem; border:1px solid var(--border-color); border-radius:8px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
+                <h2 style="margin:0;">Create New Award</h2>
+                <a href="certificates.html"><button>Back to List</button></a>
+            </div>
+
+            <div class="form-group">
+                <label for="studentName">Student Name</label>
+                <input type="text" id="studentName" placeholder="Full name">
+            </div>
+            <div class="form-group">
+                <label for="studentClass">Class / Grade</label>
+                <input type="text" id="studentClass" placeholder="e.g., 10th Grade">
+            </div>
+            <div class="form-group">
+                <label for="organizationName">School / Organization</label>
+                <input type="text" id="organizationName" placeholder="Organization name">
+            </div>
+            <div class="form-group">
+                <label for="eventName">Event Name</label>
+                <input type="text" id="eventName" placeholder="Event name">
+            </div>
+            <div class="form-group">
+                <label for="skill">Highlight Skill</label>
+                <input type="text" id="skill" placeholder="e.g., Push-up Pro">
+            </div>
+            <div class="form-group">
+                <label for="attributes">Attributes</label>
+                <textarea id="attributes" placeholder="Attributes"></textarea>
+            </div>
+
+            <button id="saveBtn" class="btn-generate">Save Award</button>
+            <div id="status" style="margin-top: 0.75rem; color: var(--text-secondary);"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const cfg = {
+          apiKey: "AIzaSyDGR7_22NGtrfuwZUeSAxUcd4uo63PBis8",
+          authDomain: "certificate-generator-2ee96.firebaseapp.com",
+          projectId: "certificate-generator-2ee96",
+          storageBucket: "certificate-generator-2ee96.appspot.com",
+          messagingSenderId: "734521744235",
+          appId: "1:734521744235:web:e2f55e375bbe90b4bbca2e"
+        };
+
+        const app = initializeApp(cfg);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
+
+        const saveBtn = document.getElementById('saveBtn');
+        const statusEl = document.getElementById('status');
+
+        function status(msg) { statusEl.textContent = msg; }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                status('Sign-in required. Opening Google sign-in...');
+                try { await signInWithPopup(auth, provider); status('Signed in.'); } catch (e) { status('Sign-in failed.'); }
+            } else {
+                status('Signed in as ' + (user.displayName || user.email));
+            }
+        });
+
+        saveBtn.addEventListener('click', async () => {
+            const studentName = document.getElementById('studentName').value.trim();
+            const studentClass = document.getElementById('studentClass').value.trim();
+            const organizationName = document.getElementById('organizationName').value.trim();
+            const eventName = document.getElementById('eventName').value.trim();
+            const skill = document.getElementById('skill').value.trim();
+            const attributes = document.getElementById('attributes').value.trim();
+
+            if (!studentName || !studentClass || !organizationName || !eventName) {
+                status('Please fill all required fields.');
+                return;
+            }
+
+            try {
+                saveBtn.disabled = true;
+                status('Saving...');
+                const doc = await addDoc(collection(db, 'awardees'), {
+                    studentName,
+                    studentClass,
+                    organizationName,
+                    eventName,
+                    certificateDetails: { skill, attributes },
+                    awardedAt: serverTimestamp(),
+                });
+                status('Saved. Redirecting to list...');
+                window.location.href = 'certificates.html';
+            } catch (e) {
+                console.error(e);
+                status('Failed to save award.');
+            } finally {
+                saveBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
+
+
