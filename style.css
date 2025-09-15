@@ -4,7 +4,7 @@
     --text-primary: #333333;
     --text-secondary: #555555;
     --border-color: #e0e0e0;
-    --accent-color: #8B4513; /* SaddleBrown - a rich, reddish-brown */
+    --accent-color: #8B4513;
     --accent-color-light: #f5f0e9;
     --light-gray-bg: #f5f5f5;
     --light-gray-border: #dcdcdc;
@@ -12,8 +12,6 @@
     --font-serif: 'Playfair Display', serif;
     --font-script: 'Pinyon Script', cursive;
 }
-
-/* --- Base & Layout --- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
     font-family: var(--font-main);
@@ -32,24 +30,84 @@ body {
     .container { grid-template-columns: 1fr; }
     body { padding: 1rem; }
 }
-
-/* --- Left Panel Controls --- */
 .left-panel {
-    /* Removed overflow-y, max-height, and padding-right to allow natural height */
+     display: flex;
+     flex-direction: column;
+     height: calc(100vh - 4rem); /* Full height minus body padding */
 }
 .left-panel h1 {
     font-family: var(--font-serif);
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     color: var(--accent-color);
     font-weight: 700;
 }
-.panel {
+/* --- Auth Section Styles --- */
+.auth-section {
     background-color: var(--panel-bg);
     border-radius: 8px;
-    padding: 0;
+    padding: 1rem;
     margin-bottom: 1.5rem;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+.auth-section .user-profile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.auth-section .user-info {
+     display: flex;
+     align-items: center;
+     gap: 0.75rem;
+     text-align: left;
+}
+.auth-section img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+.auth-section .user-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+.auth-btn {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.auth-btn.sign-out {
+     background-color: #c0392b;
+}
+.loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--accent-color);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.panel-container {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding-right: 10px; /* For scrollbar */
+}
+.panel {
     background: none;
+    margin-bottom: 1.5rem;
 }
 .panel h3 {
     font-family: var(--font-serif);
@@ -77,8 +135,6 @@ input[type="text"], textarea {
     background-color: #fff;
 }
 textarea { resize: vertical; min-height: 80px; }
-
-/* Highlight Skills Pills */
 .highlight-options {
     display: flex;
     flex-wrap: wrap;
@@ -100,9 +156,6 @@ textarea { resize: vertical; min-height: 80px; }
     color: white;
     border-color: var(--accent-color);
 }
-.highlight-option.add-new { border-style: dashed; }
-
-/* Color Options */
 .color-options { display: grid; grid-template-columns: repeat(auto-fill, minmax(45px, 1fr)); gap: 0.75rem; }
 .color-option {
     width: 100%;
@@ -113,7 +166,6 @@ textarea { resize: vertical; min-height: 80px; }
     position: relative;
     transition: transform 0.2s;
 }
-.color-option:hover { transform: scale(1.05); }
 .color-option.active {
     border-color: var(--accent-color);
     box-shadow: 0 0 0 2px var(--accent-color);
@@ -121,22 +173,18 @@ textarea { resize: vertical; min-height: 80px; }
 .color-option.active::after {
     content: '✔';
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     color: white;
     font-size: 1.5rem;
     font-weight: bold;
     text-shadow: 0 0 4px rgba(0,0,0,0.6);
 }
-
-/* Extras Section */
-.logo-upload { display: flex; align-items: center; gap: 1rem; }
-.logo-preview { width: 60px; height: 60px; border: 1px dashed var(--border-color); display: grid; place-items: center; overflow: hidden; border-radius: 6px; }
-.logo-preview img { max-width: 100%; max-height: 100%; }
-#uploadLogoBtn {
-    flex-grow: 1;
-    padding: 0.75rem;
+.logo-upload, .signature-upload { display: flex; align-items: center; gap: 1rem; }
+.logo-preview, .signature-preview { width: 60px; height: 60px; border: 1px dashed var(--border-color); display: grid; place-items: center; overflow: hidden; border-radius: 6px; }
+.logo-preview img, .signature-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
+#uploadLogoBtn, #uploadSignatureBtn {
+    flex-grow: 1; padding: 0.75rem;
     background-color: var(--light-gray-bg);
     border: 1px solid var(--light-gray-border);
     border-radius: 6px;
@@ -145,35 +193,23 @@ textarea { resize: vertical; min-height: 80px; }
 }
 .qr-toggle-group { display: flex; align-items: center; justify-content: space-between; }
 .toggle-switch {
-    width: 50px;
-    height: 28px;
-    position: relative;
-    appearance: none;
+    width: 50px; height: 28px;
+    position: relative; appearance: none;
     background: var(--light-gray-border);
-    border-radius: 28px;
-    cursor: pointer;
+    border-radius: 28px; cursor: pointer;
     transition: background-color 0.2s;
 }
 .toggle-switch::before {
-    content: '';
-    position: absolute;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: white;
-    top: 3px;
-    left: 4px;
+    content: ''; position: absolute;
+    width: 22px; height: 22px;
+    border-radius: 50%; background: white;
+    top: 3px; left: 4px;
     transition: 0.2s;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 .toggle-switch:checked { background: var(--accent-color); }
 .toggle-switch:checked::before { transform: translateX(21px); }
 .hidden { display: none; }
-.qr-options { margin-top: 1rem; }
-.add-highlight-form { border-top: 1px solid var(--border-color); margin-top: 1rem; padding-top: 1rem; }
-.add-highlight-form .form-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
-
-/* Main Buttons */
 .btn-generate {
     width: 100%;
     background-color: var(--accent-color);
@@ -184,14 +220,15 @@ textarea { resize: vertical; min-height: 80px; }
     border-radius: 6px;
     border: none;
     cursor: pointer;
-    margin-top: 2rem; /* Added to give space from the last panel */
+    margin-top: auto;
+    flex-shrink: 0;
 }
-.btn-generate:hover { background-color: #6B2E0E; }
-.actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 0; /* Removed extra top margin as certificate-wrapper now has margin-bottom */
+.btn-generate:disabled {
+     background-color: #ccc;
+     cursor: not-allowed;
 }
+.btn-generate:hover:not(:disabled) { background-color: #6B2E0E; }
+.actions { display: flex; gap: 1rem; }
 .actions button {
     flex-grow: 1;
     padding: 0.75rem;
@@ -203,20 +240,13 @@ textarea { resize: vertical; min-height: 80px; }
     cursor: pointer;
 }
 .actions button:hover { background-color: var(--light-gray-bg); }
-
-/* --- Right Panel & Certificate --- */
-.right-panel {
-    display: flex;
-    flex-direction: column;
-    /* Removed flex-grow: 1; so it doesn't stretch */
-}
+.right-panel { display: flex; flex-direction: column; }
 .certificate-wrapper {
     background: white;
     padding: 1.5rem;
     box-shadow: 0 10px 30px rgba(0,0,0,0.07);
     border-radius: 8px;
-    /* Removed flex-grow: 1; */
-    margin-bottom: 1.5rem; /* Added consistent space below certificate */
+    margin-bottom: 1.5rem;
 }
 .certificate {
     background-color: #ffffff;
@@ -225,35 +255,95 @@ textarea { resize: vertical; min-height: 80px; }
     position: relative;
     overflow: hidden;
     display: flex;
+    text-align: center;
+    padding: 4%;
+}
+.cert-border { 
+    position: absolute; 
+    top: 2.5%; left: 2.5%; right: 2.5%; bottom: 2.5%; 
+    border: 4px double var(--cert-border-color); 
+    z-index: 1; 
+}
+.cert-content { 
+    z-index: 2; 
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 15%; /* Buffer for footer */
+}
+.cert-header { 
+    width: 100%;
+    display: flex; 
+    justify-content: center;
+    align-items: center; 
+    gap: 1rem; 
+    flex-shrink: 0; 
+}
+.cert-logo { max-width: 15%; height: auto; object-fit: contain; } 
+.cert-school-name { 
+    font-size: 2.2vw; 
+    font-weight: 700; 
+    color: var(--cert-shape-color); 
+    text-align: center;
+    line-height: 1.2;
+}
+.cert-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center;
-    padding: 5%;
-    --cert-border-color: #B89B4E;
-    --cert-shape-color: #3A8D4A;
-    --cert-subtitle-color: #D1A74F;
-    --cert-primary-text-color: #1a1a1a;
+    width: 100%;
+    padding: 1rem 0;
 }
-.cert-border { position: absolute; top: 2.5%; left: 2.5%; right: 2.5%; bottom: 2.5%; border: 4px double var(--cert-border-color); z-index: 1; }
-.cert-content { position: relative; z-index: 2; width: 100%; }
-.cert-header { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-bottom: 2%; }
-.cert-logo { max-width: 21%; }
-.cert-school-name { font-size: 2.2vw; font-weight: 700; color: var(--cert-shape-color); }
+.cert-awardee-intro { font-size: 1.1vw; }
+.cert-awardee-name { font-family: var(--font-script); font-size: 4vw; line-height: 1; color: var(--text-primary); margin: 1% 0; }
 .cert-title { font-size: 1.8vw; font-weight: 600; letter-spacing: 2px; margin-bottom: 0; color: var(--cert-border-color); }
 .cert-subtitle { font-size: 1.1vw; font-weight: 600; color: var(--cert-subtitle-color); margin-bottom: 2%; }
 .cert-event-name { font-size: 1.1vw; margin-bottom: 2%; }
-.cert-highlight-script { font-family: var(--font-script); font-size: 4vw; line-height: 1; color: var(--cert-primary-text-color); margin-bottom: 1%; }
-.cert-highlight-attrs { font-size: 0.9vw; letter-spacing: 1px; margin-bottom: 4%; }
-.cert-concluding-message { font-size: 1.1vw; margin-bottom: 2%; }
-.cert-footer { display: flex; justify-content: space-between; align-items: flex-end; width: 80%; margin: 0 auto; }
-.cert-signature-area, .cert-qr-area { flex-basis: 40%; }
-.signature-line { border-bottom: 1px solid #1a1a1a; width: 60%; margin: 0 auto 0.5rem auto; }
-.cert-qr-area p { font-size: 0.8vw; }
-.cert-qr-code { width: 10vw; max-width: 100px; margin: 0 auto; }
-
-/* Print Styles */
-@media print {
-    body * { visibility: hidden; }
-    .certificate, .certificate * { visibility: visible; }
-    .certificate { position: absolute; left: 0; top: 0; width: 100vw; height: 100vh; margin: 0; padding: 0; box-shadow: none; border-radius: 0; }
+.cert-highlight-script { font-family: var(--font-script); font-size: 3vw; line-height: 1; color: var(--text-primary); margin: 1% 0; }
+.cert-highlight-attrs { font-size: 0.9vw; letter-spacing: 1px; margin-bottom: 2%; }
+.cert-footer { 
+    position: absolute;
+    z-index: 3;
+    bottom: 4%;
+    left: 5%;
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+.cert-signature-area, .cert-qr-area { 
+    flex-basis: 45%;
+    text-align: center;
+}
+.cert-signature-img {
+    display: block;
+    max-width: 10vw; 
+    max-height: 5vw;
+    width: auto; 
+    height: auto; 
+    object-fit: contain; 
+    margin: 0 auto 0.5rem auto; 
+}
+.signature-line { 
+    border-bottom: 1px solid #1a1a1a; 
+    width: 100%;
+    max-width: 180px;
+    margin: 0.5rem auto; 
+}
+.cert-signature-area p, .cert-qr-area p {
+    margin: 0;
+    font-size: 0.8vw;
+}
+#certQrCode {
+     width: 6vw !important;
+     height: 6vw !important;
+     margin: 0 auto 0.5rem;
+}
+#certQrCode img {
+     width: 100% !important;
+     height: 100% !important;
 }
