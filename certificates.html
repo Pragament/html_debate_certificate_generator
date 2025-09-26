@@ -7,94 +7,40 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container" style="grid-template-columns: 1fr;">
         <div class="panel" style="background: var(--panel-bg); padding: 1rem; border:1px solid var(--border-color); border-radius:8px;">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
-                <h2 style="margin:0;">Saved Certificates</h2>
+                <h2 class="page-header" style="margin:0; text-align:left;">Saved Certificates</h2>
                 <div style="display:flex; gap:0.5rem;">
-                    <a href="index.html"><button>Back</button></a>
-                    <a href="award.html"><button><i class="fas fa-plus"></i> New Award</button></a>
+                    <a href="index.html"><button class="btn">Back</button></a>
+                    <a href="award.html"><button class="btn"><i class="fas fa-plus"></i> New Award</button></a>
                 </div>
             </div>
-            <div id="certList" class="panel-container" style="max-height: calc(100vh - 220px);"></div>
+            
+            <!-- MODIFICATION: Added filter section -->
+            <div class="filters" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);">
+                <div class="form-group" style="margin:0;">
+                    <label for="filterDate">Filter by Date</label>
+                    <input type="date" id="filterDate" class="filter-input">
+                </div>
+                <div class="form-group" style="margin:0;">
+                    <label for="filterClass">Filter by Class</label>
+                    <input type="text" id="filterClass" class="filter-input" placeholder="e.g., 10">
+                </div>
+                <div class="form-group" style="margin:0;">
+                    <label for="filterSearch">Search by Name or Event</label>
+                    <input type="text" id="filterSearch" class="filter-input" placeholder="e.g., John Doe or Fitness">
+                </div>
+            </div>
+
+            <div id="certList" class="panel-container" style="max-height: calc(100vh - 280px);"></div>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-        const firebaseConfig = {
-          apiKey: "AIzaSyDGR7_22NGtrfuwZUeSAxUcd4uo63PBis8",
-          authDomain: "certificate-generator-2ee96.firebaseapp.com",
-          projectId: "certificate-generator-2ee96",
-          storageBucket: "certificate-generator-2ee96.appspot.com",
-          messagingSenderId: "734521744235",
-          appId: "1:734521744235:web:e2f55e375bbe90b4bbca2e"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-        const db = getFirestore(app);
-
-        const certList = document.getElementById('certList');
-
-        function renderRow(id, data) {
-            const item = document.createElement('div');
-            item.style.display = 'grid';
-            item.style.gridTemplateColumns = '1fr 1fr 1fr 1fr auto';
-            item.style.gap = '0.5rem';
-            item.style.alignItems = 'center';
-            item.style.padding = '0.75rem';
-            item.style.borderBottom = '1px solid var(--border-color)';
-
-            item.innerHTML = `
-    <div><strong>${data.studentName || ''}</strong></div>
-    <div>${data.studentClass || ''}</div>
-    <div>${data.eventName || ''}</div>
-    <div>${data.organizationName || ''}</div>
-    <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
-        <a href="index.html?cert=${btoa(encodeURIComponent(JSON.stringify({
-            schoolName: data.organizationName,
-            eventName: data.eventName,
-            studentName: data.studentName,
-            studentClass: data.studentClass,
-            highlight: { text: data.certificateDetails?.skill || '', attributes: data.certificateDetails?.attributes || '' }
-        })))}" target="_blank"><button>Open</button></a>
-    </div>`;
-            return item;
-        }
-
-        async function load() {
-            certList.innerHTML = 'Loading...';
-            const q = query(collection(db, 'awardees'), orderBy('awardedAt', 'desc'), limit(50));
-            const snap = await getDocs(q);
-            certList.innerHTML = '';
-            if (snap.empty) {
-                certList.textContent = 'No certificates yet.';
-                return;
-            }
-            snap.forEach(doc => certList.appendChild(renderRow(doc.id, doc.data())));
-        }
-
-        onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                // Prompt sign-in to satisfy Firestore rules
-                try { await signInWithPopup(auth, provider); } catch (e) { console.error(e); }
-            }
-            load().catch(err => {
-                console.error(err);
-                certList.textContent = 'Failed to load certificates.';
-            });
-        });
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="certificates.js" type="module"></script>
 </body>
 </html>
-
-
