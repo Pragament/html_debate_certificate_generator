@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Verification</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { padding: 2rem; }
+        .verification-container {
+            max-width: 900px;
+            margin: auto;
+            background: var(--panel-bg);
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+        .verification-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .verification-header p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .results-table { width: 100%; border-collapse: collapse; }
+        .results-table th, .results-table td {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .results-table th { font-weight: 600; }
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+        input[type="date"] {
+            font-family: var(--font-main);
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="verification-container">
+        <div class="verification-header">
+            <h1>Certificate Verification</h1>
+            <p id="certInfo">Loading certificate details...</p>
+        </div>
+
+        <div class="filters">
+            <div class="form-group" style="flex-grow:1; margin-bottom: 0;">
+                <label for="filterDate">Filter by Date Awarded</label>
+                <input type="date" id="filterDate" style="width:100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px;">
+            </div>
+            <div class="form-group" style="flex-grow:1; margin-bottom: 0;">
+                <label for="filterClass">Filter by Class/Grade</label>
+                <input type="text" id="filterClass" placeholder="e.g., 10th Grade">
+            </div>
+        </div>
+
+        <div id="resultsContainer">
+            <div class="loader"></div>
+        </div>
+    </div>
+
+    <script src="verify.js" type="module"></script>
+</body>
+</html>

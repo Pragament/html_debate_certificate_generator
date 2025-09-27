@@ -1,25 +1,10 @@
 // Firebase SDK Imports
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+// Import shared Firebase services
+import { auth, db } from './firebase-config.js';
 
-// --- Firebase Configuration ---
-// IMPORTANT: Replace with your actual Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "API_KEY",
-  authDomain: "AUTHDOMAIN",
-  projectId: "PROJECTID",
-  storageBucket: "STORAGEBUCKET",
-  messagingSenderId: "MESSAGINGSENDERID",
-  appId: "APIID"
-};
 try {
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
     // DOM Element References
     const ui = {
         schoolName: document.getElementById("schoolName"),
@@ -46,7 +31,7 @@ try {
         qrOptions: document.getElementById("qrOptions"),
         qrText: document.getElementById("qrText"),
     };
-  
+ 
     // Application State
     let state = {
         user: null,
@@ -57,9 +42,9 @@ try {
         studentName: "",
         studentClass: "",
         highlight: {
-          id: 6,
-          text: "🏋️ Push-up Pro 🏅",
-          attributes: "CHEST 💪 | SHOULDERS 🏋️ | TRICEPS 💪 | CORE 🧘",
+            id: 6,
+            text: "🏋️ Push-up Pro 🏅",
+            attributes: "CHEST 💪 | SHOULDERS 🏋️ | TRICEPS 💪 | CORE 🧘",
         },
         logoSrc: "https://i.ibb.co/bF03NC6/logo-removebg-preview.png",
         signatureSrc: "",
@@ -85,9 +70,9 @@ try {
             { id: 5, text: "🤔 Problem Solving", attributes: "ANALYTICAL SKILLS 🧠 | CREATIVITY 🎨 | RESOURCEFULNESS 🛠️" },
         ],
         availableColors: {
-          border: ["#2c3e50","#800000","#004d40","#D4AF37","#343a40","#8B4513"],
-          shape: ["#D4AF37","#e67e22","#1abc9c","#c09f80","#3498db","#990000"],
-          subtitle: ["#7f8c8d","#95a5a6","#bdc3c7","#848482","#d35400","#5d6d7e"],
+            border: ["#2c3e50","#800000","#004d40","#D4AF37","#343a40","#8B4513"],
+            shape: ["#D4AF37","#e67e22","#1abc9c","#c09f80","#3498db","#990000"],
+            subtitle: ["#7f8c8d","#95a5a6","#bdc3c7","#848482","#d35400","#5d6d7e"],
         },
     };
 
@@ -139,6 +124,7 @@ try {
         ui.generatePdfBtn.disabled = true;
 
         try {
+            // MODIFIED: Added logoSrc, signatureSrc, and colors to the data being saved.
             const awardeeData = {
                 studentName: state.studentName,
                 studentClass: state.studentClass,
@@ -151,12 +137,15 @@ try {
                 awardedAt: serverTimestamp(),
                 awardedBy: state.user.displayName,
                 awardedByEmail: state.user.email,
+                logoSrc: state.logoSrc,
+                signatureSrc: state.signatureSrc,
+                colors: state.colors,
             };
 
             const docRef = await addDoc(collection(db, "awardees"), awardeeData);
             console.log("Awardee saved with ID: ", docRef.id);
             
-            const verificationUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}verify.html?id=${docRef.id}`;
+            const verificationUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}verify.html?org=${encodeURIComponent(state.schoolName)}&event=${encodeURIComponent(state.eventName)}`;
             state.qr.text = verificationUrl;
             
             return verificationUrl;
@@ -170,7 +159,7 @@ try {
         }
     }
 
-    // --- Main App Logic ---
+    // --- Main App Logic (no changes below this line in this file) ---
     function setLoading(isLoading) {
         state.loading = isLoading;
         renderAuthUI();
@@ -202,37 +191,18 @@ try {
             }
         }
     }
-
-    function getShareableLink() {
-        const shareData = {
-          schoolName: state.schoolName,
-          eventName: state.eventName,
-          studentName: state.studentName,
-          studentClass: state.studentClass,
-          highlight: state.highlight,
-        };
-        // Unicode-safe Base64 encoding to support emojis and non-Latin characters
-        const encodedData = btoa(
-            encodeURIComponent(JSON.stringify(shareData))
-              .replace(/%([0-9A-F]{2})/g, (_, p1) => String.fromCharCode('0x' + p1))
-        );
-        return `${window.location.origin}${window.location.pathname}?cert=${encodedData}`;
-    }
-
+    
     function loadCertificateFromUrl() {
         const params = new URLSearchParams(window.location.search);
         const certData = params.get('cert');
         if (certData) {
             try {
-                // Unicode-safe Base64 decoding
                 const decodedData = JSON.parse(
                     decodeURIComponent(Array.from(atob(certData))
                         .map(c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0'))
                         .join(''))
                 );
                 Object.assign(state, decodedData);
-                document.getElementById('left-panel').style.display = 'none';
-                document.querySelector('.container').style.gridTemplateColumns = '1fr';
             } catch (error) {
                 console.error("Failed to load certificate from URL:", error);
             }
@@ -270,7 +240,8 @@ try {
             ? `<img src="${signatureSrc}" alt="Signature" class="cert-signature-img">` 
             : `<div class="cert-signature-placeholder" style="height: 5vw;"></div>`;
 
-        const qrCodeContent = qr.text || getShareableLink(); 
+        const genericVerificationUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}verify.html?org=${encodeURIComponent(schoolName)}&event=${encodeURIComponent(eventName)}`;
+        const qrCodeContent = qr.text || genericVerificationUrl; 
         const qrHtml = (qr.enabled && qrCodeContent) ? `<div class="cert-qr-area"><div id="certQrCode"></div><p>Scan to Verify</p></div>` : '<div class="cert-qr-area"></div>';
         
         ui.certificate.innerHTML = `
@@ -322,11 +293,11 @@ try {
     function handleInputChange(e) {
         const { id, value, type, checked } = e.target;
         if(type === 'checkbox') {
-             state.qr.enabled = checked;
+            state.qr.enabled = checked;
         } else if (id === 'highlightAttributes') {
             state.highlight.attributes = value;
         } else {
-             state[id] = value;
+            state[id] = value;
         }
         renderApp();
     }
@@ -358,7 +329,7 @@ try {
             reader.readAsDataURL(file);
         }
     }
-      
+    
     async function generatePDF() {
         const verificationUrl = await saveCertificateData();
         if (verificationUrl) {
@@ -375,7 +346,6 @@ try {
                 const pdfHeight = pdf.internal.pageSize.getHeight();
                 pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
                 pdf.save(`${state.studentName}_${state.eventName}_Certificate.pdf`);
-                // Navigate to list page after saving
                 window.location.href = 'certificates.html';
             }, 200);
         }
@@ -391,7 +361,7 @@ try {
     ui.generatePdfBtn.addEventListener("click", generatePDF);
     ui.printCertificateBtn.addEventListener("click", () => window.print());
     ui.shareCertificateBtn.addEventListener("click", () => {
-        const shareableLink = state.qr.text || getShareableLink();
+        const shareableLink = `${window.location.origin}${window.location.pathname.replace('index.html', '')}verify.html?org=${encodeURIComponent(state.schoolName)}&event=${encodeURIComponent(state.eventName)}`;
         navigator.clipboard.writeText(shareableLink).then(() => {
             alert("Certificate verification link copied to clipboard!");
         }, () => {
@@ -407,7 +377,7 @@ try {
     console.error("Firebase initialization failed. Please check your config.", error);
     document.body.innerHTML = `<div style="font-family: sans-serif; padding: 2rem;">
         <h1>Error: Firebase Initialization Failed</h1>
-        <p>The application could not start. This is likely because the Firebase configuration is missing or incorrect in your <code>script.js</code> file.</p>
+        <p>The application could not start. This is likely because the Firebase configuration is missing or incorrect in your <code>firebase-config.js</code> file.</p>
         <p>Please follow the setup guide to create a Firebase project and paste your configuration into the <code>firebaseConfig</code> object in the script.</p>
     </div>`;
 }
