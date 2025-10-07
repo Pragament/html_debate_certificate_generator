@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Verification</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { padding: 2rem; }
+        .list-container {
+            max-width: 900px;
+            margin: auto;
+            background: var(--panel-bg);
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+        .list-header h2 { margin-bottom: 0.5rem; }
+        .list-header p { color: var(--text-secondary); margin-bottom: 2rem; }
+        .results-table { width: 100%; border-collapse: collapse; }
+        .results-table th, .results-table td {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .results-table th { font-weight: 600; }
+        .results-table a { 
+            text-decoration: none; 
+            color: var(--accent-color); 
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="list-container" id="listContainer">
+        <div class="list-header">
+            <h2 id="eventName">Loading Event...</h2>
+            <p id="organizationName">Please wait while we verify the awardees.</p>
+        </div>
+        <div id="resultsContainer">
+            <div class="loader"></div>
+        </div>
+    </div>
+    
+    <script src="event-verification.js" type="module"></script>
+</body>
+</html>

@@ -43,8 +43,8 @@ try {
         studentClass: "",
         highlight: {
             id: 6,
-            text: "𓀒 Push-up Pro 🏅",
-            attributes: "CHEST 💪 | SHOULDERS 🏋️ | TRICEPS 💪 | CORE 🧘",
+            text: "Push-up Pro 🏅",
+            attributes: "CHEST  | SHOULDERS  | TRICEPS 💪 | CORE ",
         },
         logoSrc: "https://i.ibb.co/bF03NC6/logo-removebg-preview.png",
         signatureSrc: "",
@@ -170,7 +170,7 @@ try {
 
         console.log("Awardee saved with new sequential ID: ", newId);
 
-        const verificationUrl = `https://cert.pragament.com/details.html?id=${newId}`;
+        const verificationUrl = `https://cert.pragament.com/event-verification.html?org=${encodeURIComponent(state.schoolName)}&event=${encodeURIComponent(state.eventName)}`;
         state.qr.text = verificationUrl;
 
         return verificationUrl;
