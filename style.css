@@ -236,22 +236,25 @@ textarea { resize: vertical; min-height: 80px; }
 .btn-generate:hover:not(:disabled) { background-color: #6B2E0E; }
 
 .btn {
-    padding: 0.75rem;
+    padding: 0.75rem 1.2rem; /* MODIFIED: Added horizontal padding to give more space for text */
     background-color: var(--accent-color);
     border: 1px solid var(--accent-color);
-    color: white;
+    color: white; /* Ensure text color is white */
     font-weight: 500;
     border-radius: 6px;
     cursor: pointer;
     font-family: var(--font-main);
-    font-size: 0.9rem;
+    font-size: 0.9rem; /* Ensure font size is visible */
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     justify-content: center;
     text-decoration: none;
     transition: background-color 0.2s ease;
+    line-height: 1; /* Ensure text is vertically centered and compact */
+    min-width: 70px; /* MODIFIED: Give the button a minimum width */
 }
+
 .btn:hover { 
     background-color: #6B2E0E; /* Darker brown on hover */
 }
@@ -410,4 +413,12 @@ textarea { resize: vertical; min-height: 80px; }
     color: var(--cert-subtitle-color);/* Uses the lighter gray color */
     letter-spacing: 0.1em;            /* Normal letter spacing */
     margin-top: 0.2em;                /* Adjusts space between the two lines */
+}
+/* Style for the small "Open" button in tables */
+.btn.btn-table {
+    color:white;
+    padding: 0.5rem 1rem;      /* Smaller padding */
+    font-size: 0.8rem;         /* Smaller font */
+    min-width: auto;           /* Remove the minimum width */
+    gap: 0;                    /* KEY FIX: Remove the gap for the missing icon */
 }
