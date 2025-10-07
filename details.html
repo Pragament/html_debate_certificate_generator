@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { padding: 2rem; }
+        .details-container {
+            max-width: 800px;
+            margin: auto;
+            background: var(--panel-bg);
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+        }
+        .details-table {
+            width: 100%;
+            text-align: left;
+            margin-top: 2rem;
+            margin-bottom: 2.5rem;
+            border-collapse: collapse;
+        }
+        .details-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .details-table td:first-child {
+            font-weight: 600;
+            color: var(--text-secondary);
+            width: 30%;
+        }
+        .btn-open {
+            padding: 0.75rem 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="details-container" id="detailsContainer">
+        <div class="loader"></div>
+    </div>
+    
+    <script src="details.js" type="module"></script>
+</body>
+</html>

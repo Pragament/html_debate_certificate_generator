@@ -303,7 +303,7 @@ textarea { resize: vertical; min-height: 80px; }
     gap: 1rem; 
     flex-shrink: 0; 
 }
-.cert-logo { max-width: 15%; height: auto; object-fit: contain; } 
+.cert-logo { max-width: 26%; height: auto; object-fit: contain; }
 .cert-school-name { 
     font-size: 2.2vw; 
     font-weight: 700; 
@@ -311,6 +311,7 @@ textarea { resize: vertical; min-height: 80px; }
     text-align: center;
     line-height: 1.2;
 }
+
 .cert-body {
     display: flex;
     flex-direction: column;
@@ -318,6 +319,7 @@ textarea { resize: vertical; min-height: 80px; }
     align-items: center;
     width: 100%;
     padding: 1rem 0;
+    margin-top: -3vw; /* This line pulls the block up */
 }
 .cert-awardee-intro { font-size: 1.1vw; }
 .cert-awardee-name { 
@@ -326,13 +328,6 @@ textarea { resize: vertical; min-height: 80px; }
     line-height: 1; 
     color: var(--text-primary); 
     margin: 1.5% 0; 
-}
-.cert-title { 
-    font-size: 1.8vw; 
-    font-weight: 600; 
-    letter-spacing: 2px; 
-    color: var(--cert-border-color);
-    margin-bottom: 0.5%;
 }
 .cert-subtitle { font-size: 1.1vw; font-weight: 600; color: var(--cert-subtitle-color); margin-bottom: 2%; }
 .cert-event-name { font-size: 1.1vw; margin-bottom: 2%; }
@@ -396,4 +391,23 @@ textarea { resize: vertical; min-height: 80px; }
     font-size: 0.9rem;
     font-family: var(--font-main);
     background-color: #fff;
+}
+.cert-title {
+    font-family: var(--font-main);      /* MODIFICATION: Switched to modern sans-serif */
+    font-size: 3vw;                 /* MODIFICATION: Made "CERTIFICATE" large */
+    font-weight: 600;                 /* Bold */
+    color: var(--cert-border-color);  /* Dark color */
+    letter-spacing: 0em;            /* Normal letter spacing */
+    text-transform: uppercase;
+    line-height: 1;                   /* Tighter line height */
+    margin-bottom: 0;                 /* Remove bottom margin for precise control */
+}
+
+.cert-achievement-subtitle {
+    display: block;                   /* Puts "OF ACHIEVEMENT" on a new line */
+    font-size: 0.5em;                 /* Makes it smaller than "CERTIFICATE" */
+    font-weight: 400;                 /* Lighter font weight */
+    color: var(--cert-subtitle-color);/* Uses the lighter gray color */
+    letter-spacing: 0.1em;            /* Normal letter spacing */
+    margin-top: 0.2em;                /* Adjusts space between the two lines */
 }

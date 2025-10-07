@@ -1,6 +1,6 @@
 // Firebase SDK Imports
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, serverTimestamp, runTransaction, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 // Import shared Firebase services
 import { auth, db } from './firebase-config.js';
 
@@ -43,7 +43,7 @@ try {
         studentClass: "",
         highlight: {
             id: 6,
-            text: "🏋️ Push-up Pro 🏅",
+            text: "𓀒 Push-up Pro 🏅",
             attributes: "CHEST 💪 | SHOULDERS 🏋️ | TRICEPS 💪 | CORE 🧘",
         },
         logoSrc: "https://i.ibb.co/bF03NC6/logo-removebg-preview.png",
@@ -99,32 +99,46 @@ try {
 
     // --- Firestore ---
     async function saveCertificateData() {
-        if (!state.user) {
-            alert("Please sign in to save the certificate.");
+    if (!state.user) {
+        alert("Please sign in to save the certificate.");
+        return null;
+    }
+
+    if (!state.studentName.trim()) {
+        const nameFromPrompt = prompt("Please enter the awardee's full name to save and generate the certificate:");
+        if (nameFromPrompt && nameFromPrompt.trim()) {
+            state.studentName = nameFromPrompt.trim();
+            ui.studentName.value = state.studentName;
+        } else {
+            alert("Student name is required to save.");
             return null;
         }
-        
-        if (!state.studentName.trim()) {
-            const nameFromPrompt = prompt("Please enter the awardee's full name to save and generate the certificate:");
-            if (nameFromPrompt && nameFromPrompt.trim()) {
-                state.studentName = nameFromPrompt.trim();
-                ui.studentName.value = state.studentName;
-            } else {
-                alert("Student name is required to save.");
-                return null;
+    }
+
+    if (!state.studentClass.trim()) {
+        alert("Please enter the student's class.");
+        return null;
+    }
+
+    setLoading(true);
+    ui.generatePdfBtn.disabled = true;
+
+    try {
+        // This is the reference to the counter document you created
+        const counterRef = doc(db, "counters", "awardeeCounter");
+        let newId;
+
+        // A transaction ensures that even if two users click save at the same time,
+        // they will get different, sequential IDs without any conflict.
+        await runTransaction(db, async (transaction) => {
+            const counterDoc = await transaction.get(counterRef);
+            if (!counterDoc.exists()) {
+                throw "Counter document does not exist!";
             }
-        }
 
-        if (!state.studentClass.trim()) {
-            alert("Please enter the student's class.");
-            return null;
-        }
+            // Get the current count and increment it for the new ID
+            newId = counterDoc.data().count + 1;
 
-        setLoading(true);
-        ui.generatePdfBtn.disabled = true;
-
-        try {
-            // MODIFIED: Added logoSrc, signatureSrc, and colors to the data being saved.
             const awardeeData = {
                 studentName: state.studentName,
                 studentClass: state.studentClass,
@@ -140,26 +154,38 @@ try {
                 logoSrc: state.logoSrc,
                 signatureSrc: state.signatureSrc,
                 colors: state.colors,
+                // Optional: You can also save the sequential ID in the document itself
+                certificateId: newId 
             };
 
-            const docRef = await addDoc(collection(db, "awardees"), awardeeData);
-            console.log("Awardee saved with ID: ", docRef.id);
-            
-            const verificationUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}verify.html?org=${encodeURIComponent(state.schoolName)}&event=${encodeURIComponent(state.eventName)}`;
-            state.qr.text = verificationUrl;
-            
-            return verificationUrl;
-        } catch (e) {
-            console.error("Error adding document: ", e);
-            alert("Failed to save certificate data.");
-            return null;
-        } finally {
-            setLoading(false);
-            ui.generatePdfBtn.disabled = false;
-        }
-    }
+            // Create a reference to a new document in 'awardees' using the new sequential ID
+            const newAwardeeRef = doc(db, "awardees", newId.toString());
 
-    // --- Main App Logic (no changes below this line in this file) ---
+            // In the transaction, first save the new certificate...
+            transaction.set(newAwardeeRef, awardeeData);
+
+            // ...then update the counter to the new value.
+            transaction.update(counterRef, { count: newId });
+        });
+
+        console.log("Awardee saved with new sequential ID: ", newId);
+
+        const verificationUrl = `https://cert.pragament.com/details.html?id=${newId}`;
+        state.qr.text = verificationUrl;
+
+        return verificationUrl;
+
+    } catch (e) {
+        console.error("Transaction failed: ", e);
+        alert("Failed to save certificate data.");
+        return null;
+    } finally {
+        setLoading(false);
+        ui.generatePdfBtn.disabled = false;
+    }
+}
+
+    // --- Main App Logic ---
     function setLoading(isLoading) {
         state.loading = isLoading;
         renderAuthUI();
@@ -252,9 +278,7 @@ try {
                     <div class="cert-school-name">${schoolName}</div>
                 </div>
                 <div class="cert-body">
-                    <p class="cert-awardee-intro">This certificate is proudly presented to</p>
-                    <h2 class="cert-awardee-name">${studentName || "Student Name"}</h2>
-                    <h1 class="cert-title">CERTIFICATE OF ACHIEVEMENT</h1>
+                    <h1 class="cert-title">CERTIFICATE <span class="cert-achievement-subtitle">OF ACHIEVEMENT</span></h1>
                     <p class="cert-event-name">for outstanding performance in the ${eventName}</p>
                     <div class="cert-highlight-script">${highlight.text}</div>
                     <p class="cert-highlight-attrs">${highlight.attributes}</p>
@@ -330,12 +354,17 @@ try {
         }
     }
     
+    // MODIFICATION: generatePDF function updated for new link sharing
     async function generatePDF() {
         const verificationUrl = await saveCertificateData();
         if (verificationUrl) {
             state.qr.text = verificationUrl;
             ui.qrText.value = verificationUrl;
             renderCertificatePreview();
+
+            navigator.clipboard.writeText(verificationUrl).then(() => {
+                alert("Certificate saved! The unique verification link has been copied to your clipboard.");
+            });
 
             setTimeout(async () => {
                 const { jsPDF } = window.jspdf;
@@ -346,7 +375,8 @@ try {
                 const pdfHeight = pdf.internal.pageSize.getHeight();
                 pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
                 pdf.save(`${state.studentName}_${state.eventName}_Certificate.pdf`);
-                window.location.href = 'certificates.html';
+                // Optional: redirect after saving
+                // window.location.href = 'certificates.html';
             }, 200);
         }
     }
@@ -360,13 +390,18 @@ try {
     ui.uploadSignatureBtn.addEventListener("click", () => ui.signatureUpload.click());
     ui.generatePdfBtn.addEventListener("click", generatePDF);
     ui.printCertificateBtn.addEventListener("click", () => window.print());
+    
+    // MODIFICATION: Removed old share button functionality as it's now part of generatePDF
     ui.shareCertificateBtn.addEventListener("click", () => {
-        const shareableLink = `${window.location.origin}${window.location.pathname.replace('index.html', '')}verify.html?org=${encodeURIComponent(state.schoolName)}&event=${encodeURIComponent(state.eventName)}`;
-        navigator.clipboard.writeText(shareableLink).then(() => {
-            alert("Certificate verification link copied to clipboard!");
-        }, () => {
-            alert("Failed to copy link.");
-        });
+        if (ui.qrText.value) {
+            navigator.clipboard.writeText(ui.qrText.value).then(() => {
+                alert("Unique certificate link copied to clipboard!");
+            }, () => {
+                alert("Failed to copy link. Please save the certificate first.");
+            });
+        } else {
+             alert("Please save the certificate first to generate a shareable link.");
+        }
     });
 
     // Initial setup
