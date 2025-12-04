@@ -93,6 +93,22 @@
             font-size: 0.85rem;
             color: var(--text-secondary);
         }
+        .templates-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.75rem;
+        }
+        .templates-table th,
+        .templates-table td {
+            padding: 0.6rem 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        .templates-table th {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
     </style>
 </head>
 <body>
@@ -132,6 +148,16 @@
             </div>
             <div id="classesContainer">
                 <p class="text-muted">Loading classes...</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Certificate Templates</h2>
+                <button id="refreshTemplatesBtn" class="btn btn-small">Refresh</button>
+            </div>
+            <div id="templatesContainer">
+                <p class="text-muted">Loading templates...</p>
             </div>
         </div>
     </div>

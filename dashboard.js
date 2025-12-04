@@ -22,6 +22,8 @@ const ui = {
     createClassStatus: document.getElementById('createClassStatus'),
     classesContainer: document.getElementById('classesContainer'),
     refreshClassesBtn: document.getElementById('refreshClassesBtn'),
+    templatesContainer: document.getElementById('templatesContainer'),
+    refreshTemplatesBtn: document.getElementById('refreshTemplatesBtn'),
 };
 
 const provider = new GoogleAuthProvider();
@@ -201,6 +203,70 @@ async function loadClasses() {
     }
 }
 
+async function loadTemplates() {
+    ui.templatesContainer.innerHTML = '<p class="text-muted">Loading templates...</p>';
+
+    try {
+        const q = query(
+            collection(db, 'certTemplates'),
+            orderBy('templateID'),
+        );
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+            ui.templatesContainer.innerHTML = '<p class="text-muted">No certificate templates found yet.</p>';
+            return;
+        }
+
+        const rows = [];
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            const id = data.templateID || docSnap.id;
+            const title = data.templateDetails?.certTitle || 'Template';
+            const subtitle = data.templateDetails?.certSubtitle || '';
+            const created = data.created?.toDate ? data.created.toDate().toLocaleString() : '';
+            rows.push(`
+                <tr>
+                    <td>${id}</td>
+                    <td>${title}</td>
+                    <td>${subtitle}</td>
+                    <td>${created}</td>
+                    <td>
+                        <button class="btn btn-table btn-small" data-template-id="${docSnap.id}">View Awards</button>
+                    </td>
+                </tr>
+            `);
+        });
+
+        ui.templatesContainer.innerHTML = `
+            <table class="templates-table">
+                <thead>
+                    <tr>
+                        <th>Template ID</th>
+                        <th>Title</th>
+                        <th>Subtitle</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${rows.join('')}
+                </tbody>
+            </table>
+        `;
+
+        ui.templatesContainer.querySelectorAll('button[data-template-id]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const templateDocId = btn.getAttribute('data-template-id');
+                window.location.href = `template-detail.html?templateDocId=${encodeURIComponent(templateDocId)}`;
+            });
+        });
+    } catch (e) {
+        console.error('Error loading templates:', e);
+        ui.templatesContainer.innerHTML = '<p class="text-muted">Failed to load templates.</p>';
+    }
+}
+
 // Event bindings
 ui.toggleCreateClassBtn.addEventListener('click', () => {
     const isHidden = ui.createClassSection.classList.contains('hidden');
@@ -210,6 +276,7 @@ ui.toggleCreateClassBtn.addEventListener('click', () => {
 
 ui.createClassBtn.addEventListener('click', handleCreateClass);
 ui.refreshClassesBtn.addEventListener('click', loadClasses);
+ui.refreshTemplatesBtn.addEventListener('click', loadTemplates);
 
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
@@ -220,6 +287,7 @@ onAuthStateChanged(auth, (user) => {
     }
     setUserBadge(user);
     loadClasses();
+    loadTemplates();
 });
 
 
