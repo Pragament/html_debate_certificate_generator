@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            padding: 2rem;
+        }
+        .class-detail-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .class-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .class-detail-header h1 {
+            margin: 0;
+        }
+        .text-muted {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .card {
+            background: var(--panel-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .students-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.75rem;
+        }
+        .students-table th,
+        .students-table td {
+            padding: 0.6rem 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        .students-table th {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .btn-small {
+            padding: 0.4rem 0.9rem;
+            font-size: 0.8rem;
+            min-width: auto;
+        }
+        .award-panel {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+        .award-panel h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+        }
+        .award-panel .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+        .award-panel .form-group {
+            flex: 1;
+            min-width: 220px;
+            margin-bottom: 0.75rem;
+        }
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            font-family: var(--font-main);
+            background-color: #fff;
+        }
+        .status-text {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="class-detail-container">
+        <div class="class-detail-header">
+            <div>
+                <h1 id="classTitle">Class</h1>
+                <p id="classSubtitle" class="text-muted"></p>
+            </div>
+            <div>
+                <a href="dashboard.html" class="btn btn-small">Back to Dashboard</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 style="margin-top:0;">Students</h2>
+            <div id="studentsContainer">
+                <p class="text-muted">Loading students...</p>
+            </div>
+
+            <div class="award-panel" id="awardPanel" hidden>
+                <h3>Award Certificate</h3>
+                <p id="awardStudentInfo" class="text-muted"></p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="templateSelect">Certificate Template</label>
+                        <select id="templateSelect">
+                            <option value="">Loading templates...</option>
+                        </select>
+                    </div>
+                    <button id="awardBtn" class="btn-generate" style="max-width: 240px;">Award Certificate</button>
+                </div>
+                <div id="awardStatus" class="status-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="class-detail.js" type="module"></script>
+</body>
+</html>
+
+

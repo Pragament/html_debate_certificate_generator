@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Certificate Classes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            padding: 2rem;
+        }
+        .dashboard-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .dashboard-header h1 {
+            margin: 0;
+        }
+        .user-badge {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .card {
+            background: var(--panel-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        .create-class-form {
+            margin-top: 1rem;
+        }
+        .create-class-form .form-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .create-class-form .form-group {
+            flex: 1;
+            min-width: 220px;
+            margin-bottom: 0.75rem;
+        }
+        .create-class-form input[type="file"] {
+            padding: 0.4rem;
+        }
+        .classes-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0.75rem;
+        }
+        .classes-table th,
+        .classes-table td {
+            padding: 0.6rem 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        .classes-table th {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .text-muted {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .btn-small {
+            padding: 0.4rem 0.9rem;
+            font-size: 0.8rem;
+            min-width: auto;
+        }
+        .status-text {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <div>
+                <h1>Dashboard</h1>
+                <p class="text-muted">Manage your classes and award certificates to students.</p>
+            </div>
+            <div class="user-badge" id="userBadge"></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Create a Class</h2>
+                <button id="toggleCreateClassBtn" class="btn btn-small">Show Form</button>
+            </div>
+            <div id="createClassSection" class="create-class-form hidden">
+                <div class="form-group">
+                    <label for="className">Class Name</label>
+                    <input type="text" id="className" placeholder="e.g., Grade 10 A">
+                </div>
+                <div class="form-group">
+                    <label for="studentsCsv">Students CSV (name, rollNumber)</label>
+                    <input type="file" id="studentsCsv" accept=".csv,text/csv">
+                    <p class="text-muted">CSV should have two columns: <strong>name</strong> and <strong>rollNumber</strong> (header row optional).</p>
+                </div>
+                <button id="createClassBtn" class="btn-generate" style="margin-top: 0.5rem;">Create Class</button>
+                <div id="createClassStatus" class="status-text"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Your Classes</h2>
+                <button id="refreshClassesBtn" class="btn btn-small">Refresh</button>
+            </div>
+            <div id="classesContainer">
+                <p class="text-muted">Loading classes...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js" type="module"></script>
+</body>
+</html>
+
+

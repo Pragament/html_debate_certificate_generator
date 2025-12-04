@@ -312,6 +312,13 @@ try {
     onAuthStateChanged(auth, (user) => {
         state.user = user;
         state.isAuthReady = true;
+
+        // After login, redirect certificate creators to the dashboard
+        if (user && window.location.pathname.endsWith('index.html')) {
+            window.location.href = 'dashboard.html';
+            return;
+        }
+
         renderAuthUI();
         renderApp();
     });
