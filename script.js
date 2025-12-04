@@ -1,6 +1,6 @@
 // Firebase SDK Imports
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { collection, serverTimestamp, runTransaction, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, serverTimestamp, runTransaction, doc, setDoc, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 // Import shared Firebase services
 import { auth, db } from './firebase-config.js';
 
@@ -18,6 +18,8 @@ try {
         signatureUpload: document.getElementById("signatureUpload"),
         uploadLogoBtn: document.getElementById("uploadLogoBtn"),
         uploadSignatureBtn: document.getElementById("uploadSignatureBtn"),
+        logoSelect: document.getElementById("logoSelect"),
+        signatureSelect: document.getElementById("signatureSelect"),
         generatePdfBtn: document.getElementById("generatePdfBtn"),
         viewCertificatesBtn: document.getElementById("viewCertificatesBtn"),
         printCertificateBtn: document.getElementById("printCertificate"),
@@ -55,6 +57,10 @@ try {
         signatureSrc: "",
         qr: { enabled: true, text: "" },
         colors: { border: "#2c3e50", shape: "#D4AF37", subtitle: "#7f8c8d" },
+        logoId: null,
+        signatureId: null,
+        userLogos: [],
+        userSignatures: [],
         availableHighlights: [
             // Academic Excellence Badges (from WhatsApp Image)
             {
@@ -324,6 +330,123 @@ try {
     });
 
     // --- Firestore ---
+    async function loadUserAssets() {
+        if (!state.user) return;
+        try {
+            const logosQ = query(
+                collection(db, 'userLogos'),
+                where('ownerUid', '==', state.user.uid)
+            );
+            const signaturesQ = query(
+                collection(db, 'userSignatures'),
+                where('ownerUid', '==', state.user.uid)
+            );
+
+            const [logosSnap, signaturesSnap] = await Promise.all([
+                getDocs(logosQ),
+                getDocs(signaturesQ),
+            ]);
+
+            state.userLogos = [];
+            logosSnap.forEach(d => {
+                const data = d.data();
+                state.userLogos.push({
+                    id: d.id,
+                    label: data.label || `Logo ${d.id.slice(0, 6)}`,
+                    dataUrl: data.dataUrl,
+                });
+            });
+
+            state.userSignatures = [];
+            signaturesSnap.forEach(d => {
+                const data = d.data();
+                state.userSignatures.push({
+                    id: d.id,
+                    label: data.label || `Signature ${d.id.slice(0, 6)}`,
+                    dataUrl: data.dataUrl,
+                });
+            });
+
+            renderAssetSelectors();
+        } catch (e) {
+            console.error('Error loading user assets:', e);
+        }
+    }
+
+    function renderAssetSelectors() {
+        if (ui.logoSelect) {
+            ui.logoSelect.innerHTML = '<option value="">Select a saved logo</option>' + state.userLogos
+                .map(l => `<option value="${l.id}">${l.label}</option>`)
+                .join('');
+            if (state.logoId) {
+                ui.logoSelect.value = state.logoId;
+            }
+        }
+        if (ui.signatureSelect) {
+            ui.signatureSelect.innerHTML = '<option value="">Select a saved signature</option>' + state.userSignatures
+                .map(s => `<option value="${s.id}">${s.label}</option>`)
+                .join('');
+            if (state.signatureId) {
+                ui.signatureSelect.value = state.signatureId;
+            }
+        }
+    }
+
+    async function saveImageAssetToFirestore(collectionName, dataUrl) {
+        if (!state.user) {
+            alert('Please sign in before uploading images.');
+            return null;
+        }
+        try {
+            const ref = await addDoc(collection(db, collectionName), {
+                ownerUid: state.user.uid,
+                ownerEmail: state.user.email,
+                dataUrl,
+                createdAt: serverTimestamp(),
+            });
+            return ref.id;
+        } catch (e) {
+            console.error('Error saving image asset:', e);
+            alert('Failed to save image. Please try again.');
+            return null;
+        }
+    }
+
+    async function resizeAndCompressImage(file, maxSize = 320) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let { width, height } = img;
+                    if (width > height) {
+                        if (width > maxSize) {
+                            height = Math.round((height * maxSize) / width);
+                            width = maxSize;
+                        }
+                    } else {
+                        if (height > maxSize) {
+                            width = Math.round((width * maxSize) / height);
+                            height = maxSize;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    // Use PNG for lossless or JPEG for higher compression; here JPEG with decent quality
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    resolve(dataUrl);
+                };
+                img.onerror = reject;
+                img.src = event.target.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
     async function saveCertificateData() {
         if (!state.user) {
             alert("Please sign in to save the certificate.");
@@ -379,8 +502,12 @@ try {
                     created: serverTimestamp(),
                     author: state.user.displayName,
                     authorEmail: state.user.email,
+                    // Keep logoSrc/signatureSrc for backward compatibility with existing viewers
                     logoSrc: state.logoSrc,
                     signatureSrc: state.signatureSrc,
+                    // New: reference reusable assets
+                    logoId: state.logoId || null,
+                    signatureId: state.signatureId || null,
                     colors: state.colors,
                     // Optional: You can also save the sequential ID in the document itself
                     templateID: newId
@@ -581,15 +708,28 @@ try {
         }
     }
 
-    function handleFileUpload(e, targetStateProperty) {
+    async function handleImageUpload(e, target) {
         const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                state[targetStateProperty] = event.target.result;
-                renderApp();
-            };
-            reader.readAsDataURL(file);
+        if (!file) return;
+        try {
+            const compressedDataUrl = await resizeAndCompressImage(file);
+            if (target === 'logo') {
+                const id = await saveImageAssetToFirestore('userLogos', compressedDataUrl);
+                if (!id) return;
+                state.logoSrc = compressedDataUrl;
+                state.logoId = id;
+                await loadUserAssets();
+            } else if (target === 'signature') {
+                const id = await saveImageAssetToFirestore('userSignatures', compressedDataUrl);
+                if (!id) return;
+                state.signatureSrc = compressedDataUrl;
+                state.signatureId = id;
+                await loadUserAssets();
+            }
+            renderApp();
+        } catch (err) {
+            console.error('Error processing image upload:', err);
+            alert('Failed to process image. Please try a different file.');
         }
     }
 
@@ -623,10 +763,40 @@ try {
     // Event Listeners
     document.querySelector(".left-panel").addEventListener("input", handleInputChange);
     document.querySelector(".left-panel").addEventListener("click", handlePanelClick);
-    ui.logoUpload.addEventListener("change", (e) => handleFileUpload(e, 'logoSrc'));
-    ui.signatureUpload.addEventListener("change", (e) => handleFileUpload(e, 'signatureSrc'));
+    ui.logoUpload.addEventListener("change", (e) => handleImageUpload(e, 'logo'));
+    ui.signatureUpload.addEventListener("change", (e) => handleImageUpload(e, 'signature'));
     ui.uploadLogoBtn.addEventListener("click", () => ui.logoUpload.click());
     ui.uploadSignatureBtn.addEventListener("click", () => ui.signatureUpload.click());
+    if (ui.logoSelect) {
+        ui.logoSelect.addEventListener('change', () => {
+            const id = ui.logoSelect.value;
+            if (!id) {
+                state.logoId = null;
+                return;
+            }
+            const found = state.userLogos.find(l => l.id === id);
+            if (found) {
+                state.logoId = id;
+                state.logoSrc = found.dataUrl;
+                renderApp();
+            }
+        });
+    }
+    if (ui.signatureSelect) {
+        ui.signatureSelect.addEventListener('change', () => {
+            const id = ui.signatureSelect.value;
+            if (!id) {
+                state.signatureId = null;
+                return;
+            }
+            const found = state.userSignatures.find(s => s.id === id);
+            if (found) {
+                state.signatureId = id;
+                state.signatureSrc = found.dataUrl;
+                renderApp();
+            }
+        });
+    }
     ui.generatePdfBtn.addEventListener("click", generatePDF);
     ui.printCertificateBtn.addEventListener("click", () => window.print());
 
@@ -645,6 +815,9 @@ try {
 
     // Initial setup
     loadCertificateFromUrl();
+    if (state.user) {
+        loadUserAssets();
+    }
     renderApp();
 
 } catch (error) {

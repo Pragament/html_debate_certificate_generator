@@ -25,6 +25,12 @@
         .dashboard-header h1 {
             margin: 0;
         }
+        .header-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+        }
         .user-badge {
             font-size: 0.9rem;
             color: var(--text-secondary);
@@ -118,7 +124,10 @@
                 <h1>Dashboard</h1>
                 <p class="text-muted">Manage your classes and award certificates to students.</p>
             </div>
-            <div class="user-badge" id="userBadge"></div>
+            <div class="header-actions">
+                <button class="btn btn-small" onclick="window.location.href='index.html'">Create Certificate Template</button>
+                <div class="user-badge" id="userBadge"></div>
+            </div>
         </div>
 
         <div class="card">
