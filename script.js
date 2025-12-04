@@ -8,6 +8,8 @@ try {
     // DOM Element References
     const ui = {
         schoolName: document.getElementById("schoolName"),
+        certTitle: document.getElementById("certTitle"),
+        certSubtitle: document.getElementById("certSubtitle"),
         eventName: document.getElementById("eventName"),
         studentName: document.getElementById("studentName"),
         studentClass: document.getElementById("studentClass"),
@@ -17,6 +19,7 @@ try {
         uploadLogoBtn: document.getElementById("uploadLogoBtn"),
         uploadSignatureBtn: document.getElementById("uploadSignatureBtn"),
         generatePdfBtn: document.getElementById("generatePdfBtn"),
+        viewCertificatesBtn: document.getElementById("viewCertificatesBtn"),
         printCertificateBtn: document.getElementById("printCertificate"),
         shareCertificateBtn: document.getElementById("shareCertificate"),
         certificate: document.getElementById("certificate"),
@@ -52,44 +55,236 @@ try {
         colors: { border: "#2c3e50", shape: "#D4AF37", subtitle: "#7f8c8d" },
         availableHighlights: [
             // Academic Excellence Badges (from WhatsApp Image)
-            { id: 18, text: "⭐ Star Performer", attributes: "HIGH ACHIEVER 📊 | LEADER 🧭 | ACTIVE PARTICIPANT 🎯 | ENTHUSIASTIC LEARNER ✨ | ROLE MODEL 👑" },
-            { id: 19, text: "🔍 Explorer", attributes: "CURIOUS 🤔 | ACTIVE PARTICIPANT 🎯 | INQUISITIVE ❓ | ENTHUSIASTIC ✨ | INNOVATIVE 💡" },
-            { id: 20, text: "🎤 Star Presenter", attributes: "PUBLIC SPEAKING 🗣️ | EFFECTIVE COMMUNICATION 💬 | VISUAL AID USER 🖼️ | CONFIDENT 💪 | POSITIVE FEEDBACK 👍" },
-            { id: 21, text: "📚 Vocab Superstar", attributes: "EXTENSIVE VOCABULARY 📖 | ACTIVE IN LANGUAGE ACTIVITIES ✍️ | CONTEXTUAL USE 🧠 | READING ENTHUSIAST 📚 | PEER HELPER 👥" },
-            { id: 22, text: "👀 Observer", attributes: "ATTENTION TO DETAIL 🔎 | PERCEPTIVE 👁️ | EXCELLENT LISTENER 👂 | THOUGHTFUL FEEDBACK 💭 | DEEP UNDERSTANDING 🧠" },
-            { id: 23, text: "🌟 Rising Star", attributes: "IMPROVEMENT 📈 | ENGAGED 🎯 | INITIATIVE TAKER 💡 | INTEREST 🌈 | RESILIENT 💪" },
-            { id: 24, text: "🎨 Most Creative", attributes: "IMPROVEMENT 📈 | ENGAGED 🎯 | INITIATIVE TAKER 💡 | INTEREST 🌈 | RESILIENT 💪" },
-            { id: 25, text: "📊 Big Progress", attributes: "ACADEMIC IMPROVEMENT 📈 | BEHAVIORAL GROWTH 🌱 | GOAL ACHIEVER 🎯 | CONFIDENCE 💪 | POSITIVE FEEDBACK 👍" },
-            { id: 26, text: "✨ Amazing Work", attributes: "HIGH QUALITY 🏆 | EXCEPTIONAL EFFORT 💫 | MASTERY 🧠 | DETAIL-ORIENTED 🔎 | COMMENDATIONS 👍" },
+            {
+                id: 18,
+                text: "⭐ Star Performer",
+                attributes: "HIGH ACHIEVER 📊 | LEADER 🧭 | ACTIVE PARTICIPANT 🎯 | ENTHUSIASTIC LEARNER ✨ | ROLE MODEL 👑",
+                certTitle: "Certificate of Excellence",
+                certSubtitle: "Awarded to a Star Performer"
+            },
+            {
+                id: 19,
+                text: "🔍 Explorer",
+                attributes: "CURIOUS 🤔 | ACTIVE PARTICIPANT 🎯 | INQUISITIVE ❓ | ENTHUSIASTIC ✨ | INNOVATIVE 💡",
+                certTitle: "Explorer Award",
+                certSubtitle: "For Curiosity and Discovery"
+            },
+            {
+                id: 20,
+                text: "🎤 Star Presenter",
+                attributes: "PUBLIC SPEAKING 🗣️ | EFFECTIVE COMMUNICATION 💬 | VISUAL AID USER 🖼️ | CONFIDENT 💪 | POSITIVE FEEDBACK 👍",
+                certTitle: "Star Presenter Certificate",
+                certSubtitle: "Excellence in Communication & Presentation"
+            },
+            {
+                id: 21,
+                text: "📚 Vocab Superstar",
+                attributes: "EXTENSIVE VOCABULARY 📖 | ACTIVE IN LANGUAGE ACTIVITIES ✍️ | CONTEXTUAL USE 🧠 | READING ENTHUSIAST 📚 | PEER HELPER 👥",
+                certTitle: "Vocabulary Champion",
+                certSubtitle: "Mastery of Language & Expression"
+            },
+            {
+                id: 22,
+                text: "👀 Observer",
+                attributes: "ATTENTION TO DETAIL 🔎 | PERCEPTIVE 👁️ | EXCELLENT LISTENER 👂 | THOUGHTFUL FEEDBACK 💭 | DEEP UNDERSTANDING 🧠",
+                certTitle: "Keen Observer Award",
+                certSubtitle: "For Exceptional Attention to Detail"
+            },
+            {
+                id: 23,
+                text: "🌟 Rising Star",
+                attributes: "IMPROVEMENT 📈 | ENGAGED 🎯 | INITIATIVE TAKER 💡 | INTEREST 🌈 | RESILIENT 💪",
+                certTitle: "Rising Star Certificate",
+                certSubtitle: "Outstanding Growth & Improvement"
+            },
+            {
+                id: 24,
+                text: "🎨 Most Creative",
+                attributes: "IMPROVEMENT 📈 | ENGAGED 🎯 | INITIATIVE TAKER 💡 | INTEREST 🌈 | RESILIENT 💪",
+                certTitle: "Creative Genius Award",
+                certSubtitle: "For Exceptional Creativity & Innovation"
+            },
+            {
+                id: 25,
+                text: "📊 Big Progress",
+                attributes: "ACADEMIC IMPROVEMENT 📈 | BEHAVIORAL GROWTH 🌱 | GOAL ACHIEVER 🎯 | CONFIDENCE 💪 | POSITIVE FEEDBACK 👍",
+                certTitle: "Progress Achievement Award",
+                certSubtitle: "Significant Growth & Development"
+            },
+            {
+                id: 26,
+                text: "✨ Amazing Work",
+                attributes: "HIGH QUALITY 🏆 | EXCEPTIONAL EFFORT 💫 | MASTERY 🧠 | DETAIL-ORIENTED 🔎 | COMMENDATIONS 👍",
+                certTitle: "Excellence in Academics",
+                certSubtitle: "For Consistently Amazing Work"
+            },
 
             // E-DAC Badges (from Pre-primary PDF)
-            { id: 27, text: "⭐ E-DAC Star Performer", attributes: "INDEPENDENT WORK 📝 | QUICK RESPONSE ⚡ | COLLABORATION 👥 | PROJECT COMPLETION ✅ | INNOVATIVE SOLUTIONS 💡" },
-            { id: 28, text: "🎨 E-DAC Most Creative", attributes: "CREATIVE PRESENTATION 🖼️ | CRITICAL QUESTIONS ❓ | INNOVATIVE SOLUTIONS 💡 | IDEA SHARING 💭" },
-            { id: 29, text: "🌟 E-DAC Rising Star", attributes: "ATTEMPTS WRITING ✍️ | SHOWS INTEREST 🎯 | HOMEWORK INITIATIVE 📚 | CLASS PRESENTATION 🗣️" },
-            { id: 30, text: "🔍 E-DAC Explorer", attributes: "ADDITIONAL RESEARCH 📚 | BEYOND-BOOK QUESTIONS ❓ | MULTIPLE ATTEMPTS 🔄 | BRAINSTORMING 💭" },
-            { id: 31, text: "👀 E-DAC Observer", attributes: "KEEN OBSERVATION 👁️ | SHARES OBSERVATIONS 💬 | CONCEPTUAL QUESTIONS ❓ | MULTIPLE APPROACHES 🔄" },
-            { id: 32, text: "🎤 Star Presence", attributes: "CONFIDENT BODY LANGUAGE 💪 | INITIATIVE TO SPEAK 🗣️" },
+            {
+                id: 27,
+                text: "⭐ E-DAC Star Performer",
+                attributes: "INDEPENDENT WORK 📝 | QUICK RESPONSE ⚡ | COLLABORATION 👥 | PROJECT COMPLETION ✅ | INNOVATIVE SOLUTIONS 💡",
+                certTitle: "E-DAC Star Performer",
+                certSubtitle: "Excellence in Digital-Age Competencies"
+            },
+            {
+                id: 28,
+                text: "🎨 E-DAC Most Creative",
+                attributes: "CREATIVE PRESENTATION 🖼️ | CRITICAL QUESTIONS ❓ | INNOVATIVE SOLUTIONS 💡 | IDEA SHARING 💭",
+                certTitle: "E-DAC Creative Innovator",
+                certSubtitle: "Outstanding Creative Thinking"
+            },
+            {
+                id: 29,
+                text: "🌟 E-DAC Rising Star",
+                attributes: "ATTEMPTS WRITING ✍️ | SHOWS INTEREST 🎯 | HOMEWORK INITIATIVE 📚 | CLASS PRESENTATION 🗣️",
+                certTitle: "E-DAC Rising Star",
+                certSubtitle: "Emerging Excellence & Initiative"
+            },
+            {
+                id: 30,
+                text: "🔍 E-DAC Explorer",
+                attributes: "ADDITIONAL RESEARCH 📚 | BEYOND-BOOK QUESTIONS ❓ | MULTIPLE ATTEMPTS 🔄 | BRAINSTORMING 💭",
+                certTitle: "E-DAC Explorer Award",
+                certSubtitle: "For Curiosity & In-depth Exploration"
+            },
+            {
+                id: 31,
+                text: "👀 E-DAC Observer",
+                attributes: "KEEN OBSERVATION 👁️ | SHARES OBSERVATIONS 💬 | CONCEPTUAL QUESTIONS ❓ | MULTIPLE APPROACHES 🔄",
+                certTitle: "E-DAC Keen Observer",
+                certSubtitle: "Exceptional Observation Skills"
+            },
+            {
+                id: 32,
+                text: "🎤 Star Presence",
+                attributes: "CONFIDENT BODY LANGUAGE 💪 | INITIATIVE TO SPEAK 🗣️",
+                certTitle: "Star Presence Award",
+                certSubtitle: "Confidence & Communication Excellence"
+            },
 
             // Original Fitness Badges
-            { id: 6, text: "🏋️ Push-up Pro 🏅", attributes: "CHEST 💪 | SHOULDERS 🏋️ | TRICEPS 💪 | CORE 🧘" },
-            { id: 7, text: "🏋️ Plank Master 🏅", attributes: "CORE 🧘 | SHOULDERS 🏋️ | BACK 🚶" },
-            { id: 8, text: "🏋️ Wall Sit Warrior 🏅", attributes: "QUADRICEPS 🦵 | GLUTES 🍑 | CORE 🧘" },
-            { id: 9, text: "🏋️ Squat Star 🏅", attributes: "QUADRICEPS 🦵 | HAMSTRINGS 🏃 | GLUTES 🍑" },
-            { id: 10, text: "🏋️ Burpee Champion 🏅", attributes: "FULL BODY 🤸 | CHEST 💪 | LEGS 🦵 | CORE 🧘" },
-            { id: 11, text: "🤸 Flexibility Ace 🏅", attributes: "HAMSTRINGS 🤸 | LOWER BACK 🧘" },
-            { id: 12, text: "🤸 Balance King/Queen 🏅", attributes: "CORE 🧘 | ANKLES 👣 | CALVES 🦵" },
-            { id: 13, text: "🤸 Yoga Pose Hero 🏅", attributes: "CORE 🧘 | BALANCE 🤸 | FLEXIBILITY 🧘‍♀️" },
-            { id: 14, text: "⚡ High Knees Hustler 🏅", attributes: "HIP FLEXORS 🏃 | QUADS 🦵 | CORE 🧘" },
-            { id: 15, text: "⚡ Mountain Climber Champ 🏅", attributes: "CORE 🧘 | SHOULDERS 🏋️ | QUADS 🦵" },
-            { id: 16, text: "⚡ Jumping Jack Star 🏅", attributes: "SHOULDERS 🏋️ | CALVES 🦵 | CORE 🧘" },
-            { id: 17, text: "⚡ Fast Feet Sprinter 🏅", attributes: "CALVES 🦵 | QUADS 🦵 | GLUTES 🍑" },
+            {
+                id: 6,
+                text: "🏋️ Push-up Pro 🏅",
+                attributes: "CHEST 💪 | SHOULDERS 🏋️ | TRICEPS 💪 | CORE 🧘",
+                certTitle: "Fitness Excellence Award",
+                certSubtitle: "Push-up Pro Certification"
+            },
+            {
+                id: 7,
+                text: "🏋️ Plank Master 🏅",
+                attributes: "CORE 🧘 | SHOULDERS 🏋️ | BACK 🚶",
+                certTitle: "Core Strength Certificate",
+                certSubtitle: "Plank Master Achievement"
+            },
+            {
+                id: 8,
+                text: "🏋️ Wall Sit Warrior 🏅",
+                attributes: "QUADRICEPS 🦵 | GLUTES 🍑 | CORE 🧘",
+                certTitle: "Lower Body Strength Award",
+                certSubtitle: "Wall Sit Warrior Certification"
+            },
+            {
+                id: 9,
+                text: "🏋️ Squat Star 🏅",
+                attributes: "QUADRICEPS 🦵 | HAMSTRINGS 🏃 | GLUTES 🍑",
+                certTitle: "Leg Strength Excellence",
+                certSubtitle: "Squat Star Achievement"
+            },
+            {
+                id: 10,
+                text: "🏋️ Burpee Champion 🏅",
+                attributes: "FULL BODY 🤸 | CHEST 💪 | LEGS 🦵 | CORE 🧘",
+                certTitle: "Full Body Fitness Award",
+                certSubtitle: "Burpee Champion Certification"
+            },
+            {
+                id: 11,
+                text: "🤸 Flexibility Ace 🏅",
+                attributes: "HAMSTRINGS 🤸 | LOWER BACK 🧘",
+                certTitle: "Flexibility Excellence",
+                certSubtitle: "Flexibility Ace Achievement"
+            },
+            {
+                id: 12,
+                text: "🤸 Balance King/Queen 🏅",
+                attributes: "CORE 🧘 | ANKLES 👣 | CALVES 🦵",
+                certTitle: "Balance Mastery Award",
+                certSubtitle: "Balance Excellence Certification"
+            },
+            {
+                id: 13,
+                text: "🤸 Yoga Pose Hero 🏅",
+                attributes: "CORE 🧘 | BALANCE 🤸 | FLEXIBILITY 🧘‍♀️",
+                certTitle: "Yoga Excellence Certificate",
+                certSubtitle: "Yoga Pose Hero Achievement"
+            },
+            {
+                id: 14,
+                text: "⚡ High Knees Hustler 🏅",
+                attributes: "HIP FLEXORS 🏃 | QUADS 🦵 | CORE 🧘",
+                certTitle: "Cardio Fitness Award",
+                certSubtitle: "High Knees Hustler Certification"
+            },
+            {
+                id: 15,
+                text: "⚡ Mountain Climber Champ 🏅",
+                attributes: "CORE 🧘 | SHOULDERS 🏋️ | QUADS 🦵",
+                certTitle: "Endurance Excellence",
+                certSubtitle: "Mountain Climber Champion"
+            },
+            {
+                id: 16,
+                text: "⚡ Jumping Jack Star 🏅",
+                attributes: "SHOULDERS 🏋️ | CALVES 🦵 | CORE 🧘",
+                certTitle: "Cardiovascular Fitness Award",
+                certSubtitle: "Jumping Jack Star Achievement"
+            },
+            {
+                id: 17,
+                text: "⚡ Fast Feet Sprinter 🏅",
+                attributes: "CALVES 🦵 | QUADS 🦵 | GLUTES 🍑",
+                certTitle: "Speed & Agility Certificate",
+                certSubtitle: "Fast Feet Sprinter Excellence"
+            },
 
             // Original Skill Badges
-            { id: 1, text: "🖼️ Presentation Skills", attributes: "VOICE 🎤 | CONFIDENCE 💪✨ | EYE CONTACT 👀" },
-            { id: 2, text: "🤝 Teamwork", attributes: "COLLABORATION 👥 | SUPPORT 💖 | RELIABILITY ✅" },
-            { id: 3, text: "🌟 Leadership", attributes: "INITIATIVE 💡 | GUIDANCE 🧭 | MOTIVATION 🔥" },
-            { id: 4, text: "📣 Communication", attributes: "CLARITY 🗣️ | PERSUASION ✍️ | LISTENING 👂" },
-            { id: 5, text: "🤔 Problem Solving", attributes: "ANALYTICAL SKILLS 🧠 | CREATIVITY 🎨 | RESOURCEFULNESS 🛠️" },
+            {
+                id: 1,
+                text: "🖼️ Presentation Skills",
+                attributes: "VOICE 🎤 | CONFIDENCE 💪✨ | EYE CONTACT 👀",
+                certTitle: "Presentation Excellence Award",
+                certSubtitle: "Mastery of Public Speaking"
+            },
+            {
+                id: 2,
+                text: "🤝 Teamwork",
+                attributes: "COLLABORATION 👥 | SUPPORT 💖 | RELIABILITY ✅",
+                certTitle: "Team Player Award",
+                certSubtitle: "Excellence in Collaboration"
+            },
+            {
+                id: 3,
+                text: "🌟 Leadership",
+                attributes: "INITIATIVE 💡 | GUIDANCE 🧭 | MOTIVATION 🔥",
+                certTitle: "Leadership Excellence Certificate",
+                certSubtitle: "Outstanding Leadership Qualities"
+            },
+            {
+                id: 4,
+                text: "📣 Communication",
+                attributes: "CLARITY 🗣️ | PERSUASION ✍️ | LISTENING 👂",
+                certTitle: "Communication Excellence Award",
+                certSubtitle: "Mastery of Effective Communication"
+            },
+            {
+                id: 5,
+                text: "🤔 Problem Solving",
+                attributes: "ANALYTICAL SKILLS 🧠 | CREATIVITY 🎨 | RESOURCEFULNESS 🛠️",
+                certTitle: "Problem Solver Award",
+                certSubtitle: "Excellence in Critical Thinking"
+            },
         ],
         availableColors: {
             border: ["#2c3e50", "#800000", "#004d40", "#D4AF37", "#343a40", "#8B4513"],
@@ -192,7 +387,8 @@ try {
 
             console.log("Awardee saved with new sequential ID: ", newId);
 
-            const verificationUrl = `https://cert.pragament.com/event-verification.html?org=${encodeURIComponent(state.schoolName)}&event=${encodeURIComponent(state.eventName)}`;
+            //const verificationUrl = `https://cert.pragament.com/event-verification.html?org=${encodeURIComponent(state.schoolName)}&event=${encodeURIComponent(state.eventName)}`;
+            const verificationUrl = `https://cert.pragament.com/v.htm?id=${newId}`;
             state.qr.text = verificationUrl;
 
             return verificationUrl;
@@ -232,6 +428,12 @@ try {
                 signOutBtn.addEventListener('click', signOutUser);
             }
         } else {
+            ui.generatePdfBtn.disabled = true;
+            ui.qrToggle.checked = false;
+            ui.qrToggle.disabled = true;
+            state.qr.enabled = false;
+            ui.generatePdfBtn.innerHTML = '<i class="fas fa-save"></i> Login to Save &amp; Generate PDF';
+            ui.viewCertificatesBtn.hidden = true;
             ui.authSection.innerHTML = `<button id="signInBtn" class="auth-btn"><i class="fab fa-google"></i> Sign In with Google</button>`;
             const signInBtn = document.getElementById('signInBtn');
             if (signInBtn) {
@@ -300,8 +502,8 @@ try {
                     <div class="cert-school-name">${schoolName}</div>
                 </div>
                 <div class="cert-body">
-                    <h1 class="cert-title">CERTIFICATE <span class="cert-achievement-subtitle">OF ACHIEVEMENT</span></h1>
-                    <p class="cert-event-name">for outstanding performance in the ${eventName}</p>
+                    <h1 class="cert-title">${highlight.certTitle}</h1>
+                    <p class="cert-event-name">${highlight.certSubtitle}</p>
                     <div class="cert-highlight-script">${highlight.text}</div>
                     <p class="cert-highlight-attrs">${highlight.attributes}</p>
                 </div>
@@ -340,6 +542,10 @@ try {
         const { id, value, type, checked } = e.target;
         if (type === 'checkbox') {
             state.qr.enabled = checked;
+        } else if (id === 'certTitle') {
+            state.highlight.certTitle = value;
+        } else if (id === 'certSubtitle') {
+            state.highlight.certSubtitle = value;
         } else if (id === 'highlightAttributes') {
             state.highlight.attributes = value;
         } else {
