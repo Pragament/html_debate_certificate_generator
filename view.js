@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // QR code logic
         // MODIFICATION: The QR code URL should now point to details.html for consistency
-        const verificationUrl = `${window.location.origin}${window.location.pathname.replace('view.html', '')}details.html?id=${certificateId}`;
+        const verificationUrl = `${window.location.origin}${window.location.pathname.replace('view.html', '')}v.htm?id=${certificateId}`;
         const qrCodeContent = verificationUrl;
 
         certificateEl.style.setProperty("--cert-border-color", colors.border);

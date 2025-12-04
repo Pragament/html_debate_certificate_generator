@@ -31,7 +31,7 @@ try {
         qrOptions: document.getElementById("qrOptions"),
         qrText: document.getElementById("qrText"),
     };
- 
+
     // Application State
     let state = {
         user: null,
@@ -51,6 +51,26 @@ try {
         qr: { enabled: true, text: "" },
         colors: { border: "#2c3e50", shape: "#D4AF37", subtitle: "#7f8c8d" },
         availableHighlights: [
+            // Academic Excellence Badges (from WhatsApp Image)
+            { id: 18, text: "⭐ Star Performer", attributes: "HIGH ACHIEVER 📊 | LEADER 🧭 | ACTIVE PARTICIPANT 🎯 | ENTHUSIASTIC LEARNER ✨ | ROLE MODEL 👑" },
+            { id: 19, text: "🔍 Explorer", attributes: "CURIOUS 🤔 | ACTIVE PARTICIPANT 🎯 | INQUISITIVE ❓ | ENTHUSIASTIC ✨ | INNOVATIVE 💡" },
+            { id: 20, text: "🎤 Star Presenter", attributes: "PUBLIC SPEAKING 🗣️ | EFFECTIVE COMMUNICATION 💬 | VISUAL AID USER 🖼️ | CONFIDENT 💪 | POSITIVE FEEDBACK 👍" },
+            { id: 21, text: "📚 Vocab Superstar", attributes: "EXTENSIVE VOCABULARY 📖 | ACTIVE IN LANGUAGE ACTIVITIES ✍️ | CONTEXTUAL USE 🧠 | READING ENTHUSIAST 📚 | PEER HELPER 👥" },
+            { id: 22, text: "👀 Observer", attributes: "ATTENTION TO DETAIL 🔎 | PERCEPTIVE 👁️ | EXCELLENT LISTENER 👂 | THOUGHTFUL FEEDBACK 💭 | DEEP UNDERSTANDING 🧠" },
+            { id: 23, text: "🌟 Rising Star", attributes: "IMPROVEMENT 📈 | ENGAGED 🎯 | INITIATIVE TAKER 💡 | INTEREST 🌈 | RESILIENT 💪" },
+            { id: 24, text: "🎨 Most Creative", attributes: "IMPROVEMENT 📈 | ENGAGED 🎯 | INITIATIVE TAKER 💡 | INTEREST 🌈 | RESILIENT 💪" },
+            { id: 25, text: "📊 Big Progress", attributes: "ACADEMIC IMPROVEMENT 📈 | BEHAVIORAL GROWTH 🌱 | GOAL ACHIEVER 🎯 | CONFIDENCE 💪 | POSITIVE FEEDBACK 👍" },
+            { id: 26, text: "✨ Amazing Work", attributes: "HIGH QUALITY 🏆 | EXCEPTIONAL EFFORT 💫 | MASTERY 🧠 | DETAIL-ORIENTED 🔎 | COMMENDATIONS 👍" },
+
+            // E-DAC Badges (from Pre-primary PDF)
+            { id: 27, text: "⭐ E-DAC Star Performer", attributes: "INDEPENDENT WORK 📝 | QUICK RESPONSE ⚡ | COLLABORATION 👥 | PROJECT COMPLETION ✅ | INNOVATIVE SOLUTIONS 💡" },
+            { id: 28, text: "🎨 E-DAC Most Creative", attributes: "CREATIVE PRESENTATION 🖼️ | CRITICAL QUESTIONS ❓ | INNOVATIVE SOLUTIONS 💡 | IDEA SHARING 💭" },
+            { id: 29, text: "🌟 E-DAC Rising Star", attributes: "ATTEMPTS WRITING ✍️ | SHOWS INTEREST 🎯 | HOMEWORK INITIATIVE 📚 | CLASS PRESENTATION 🗣️" },
+            { id: 30, text: "🔍 E-DAC Explorer", attributes: "ADDITIONAL RESEARCH 📚 | BEYOND-BOOK QUESTIONS ❓ | MULTIPLE ATTEMPTS 🔄 | BRAINSTORMING 💭" },
+            { id: 31, text: "👀 E-DAC Observer", attributes: "KEEN OBSERVATION 👁️ | SHARES OBSERVATIONS 💬 | CONCEPTUAL QUESTIONS ❓ | MULTIPLE APPROACHES 🔄" },
+            { id: 32, text: "🎤 Star Presence", attributes: "CONFIDENT BODY LANGUAGE 💪 | INITIATIVE TO SPEAK 🗣️" },
+
+            // Original Fitness Badges
             { id: 6, text: "🏋️ Push-up Pro 🏅", attributes: "CHEST 💪 | SHOULDERS 🏋️ | TRICEPS 💪 | CORE 🧘" },
             { id: 7, text: "🏋️ Plank Master 🏅", attributes: "CORE 🧘 | SHOULDERS 🏋️ | BACK 🚶" },
             { id: 8, text: "🏋️ Wall Sit Warrior 🏅", attributes: "QUADRICEPS 🦵 | GLUTES 🍑 | CORE 🧘" },
@@ -63,6 +83,8 @@ try {
             { id: 15, text: "⚡ Mountain Climber Champ 🏅", attributes: "CORE 🧘 | SHOULDERS 🏋️ | QUADS 🦵" },
             { id: 16, text: "⚡ Jumping Jack Star 🏅", attributes: "SHOULDERS 🏋️ | CALVES 🦵 | CORE 🧘" },
             { id: 17, text: "⚡ Fast Feet Sprinter 🏅", attributes: "CALVES 🦵 | QUADS 🦵 | GLUTES 🍑" },
+
+            // Original Skill Badges
             { id: 1, text: "🖼️ Presentation Skills", attributes: "VOICE 🎤 | CONFIDENCE 💪✨ | EYE CONTACT 👀" },
             { id: 2, text: "🤝 Teamwork", attributes: "COLLABORATION 👥 | SUPPORT 💖 | RELIABILITY ✅" },
             { id: 3, text: "🌟 Leadership", attributes: "INITIATIVE 💡 | GUIDANCE 🧭 | MOTIVATION 🔥" },
@@ -70,9 +92,9 @@ try {
             { id: 5, text: "🤔 Problem Solving", attributes: "ANALYTICAL SKILLS 🧠 | CREATIVITY 🎨 | RESOURCEFULNESS 🛠️" },
         ],
         availableColors: {
-            border: ["#2c3e50","#800000","#004d40","#D4AF37","#343a40","#8B4513"],
-            shape: ["#D4AF37","#e67e22","#1abc9c","#c09f80","#3498db","#990000"],
-            subtitle: ["#7f8c8d","#95a5a6","#bdc3c7","#848482","#d35400","#5d6d7e"],
+            border: ["#2c3e50", "#800000", "#004d40", "#D4AF37", "#343a40", "#8B4513"],
+            shape: ["#D4AF37", "#e67e22", "#1abc9c", "#c09f80", "#3498db", "#990000"],
+            subtitle: ["#7f8c8d", "#95a5a6", "#bdc3c7", "#848482", "#d35400", "#5d6d7e"],
         },
     };
 
@@ -99,91 +121,91 @@ try {
 
     // --- Firestore ---
     async function saveCertificateData() {
-    if (!state.user) {
-        alert("Please sign in to save the certificate.");
-        return null;
-    }
-
-    if (!state.studentName.trim()) {
-        const nameFromPrompt = prompt("Please enter the awardee's full name to save and generate the certificate:");
-        if (nameFromPrompt && nameFromPrompt.trim()) {
-            state.studentName = nameFromPrompt.trim();
-            ui.studentName.value = state.studentName;
-        } else {
-            alert("Student name is required to save.");
+        if (!state.user) {
+            alert("Please sign in to save the certificate.");
             return null;
         }
-    }
 
-    if (!state.studentClass.trim()) {
-        alert("Please enter the student's class.");
-        return null;
-    }
-
-    setLoading(true);
-    ui.generatePdfBtn.disabled = true;
-
-    try {
-        // This is the reference to the counter document you created
-        const counterRef = doc(db, "counters", "awardeeCounter");
-        let newId;
-
-        // A transaction ensures that even if two users click save at the same time,
-        // they will get different, sequential IDs without any conflict.
-        await runTransaction(db, async (transaction) => {
-            const counterDoc = await transaction.get(counterRef);
-            if (!counterDoc.exists()) {
-                throw "Counter document does not exist!";
+        if (!state.studentName.trim()) {
+            const nameFromPrompt = prompt("Please enter the awardee's full name to save and generate the certificate:");
+            if (nameFromPrompt && nameFromPrompt.trim()) {
+                state.studentName = nameFromPrompt.trim();
+                ui.studentName.value = state.studentName;
+            } else {
+                alert("Student name is required to save.");
+                return null;
             }
+        }
 
-            // Get the current count and increment it for the new ID
-            newId = counterDoc.data().count + 1;
+        if (!state.studentClass.trim()) {
+            alert("Please enter the student's class.");
+            return null;
+        }
 
-            const awardeeData = {
-                studentName: state.studentName,
-                studentClass: state.studentClass,
-                eventName: state.eventName,
-                organizationName: state.schoolName,
-                certificateDetails: {
-                    skill: state.highlight.text,
-                    attributes: state.highlight.attributes
-                },
-                awardedAt: serverTimestamp(),
-                awardedBy: state.user.displayName,
-                awardedByEmail: state.user.email,
-                logoSrc: state.logoSrc,
-                signatureSrc: state.signatureSrc,
-                colors: state.colors,
-                // Optional: You can also save the sequential ID in the document itself
-                certificateId: newId 
-            };
+        setLoading(true);
+        ui.generatePdfBtn.disabled = true;
 
-            // Create a reference to a new document in 'awardees' using the new sequential ID
-            const newAwardeeRef = doc(db, "awardees", newId.toString());
+        try {
+            // This is the reference to the counter document you created
+            const counterRef = doc(db, "counters", "awardeeCounter");
+            let newId;
 
-            // In the transaction, first save the new certificate...
-            transaction.set(newAwardeeRef, awardeeData);
+            // A transaction ensures that even if two users click save at the same time,
+            // they will get different, sequential IDs without any conflict.
+            await runTransaction(db, async (transaction) => {
+                const counterDoc = await transaction.get(counterRef);
+                if (!counterDoc.exists()) {
+                    throw "Counter document does not exist!";
+                }
 
-            // ...then update the counter to the new value.
-            transaction.update(counterRef, { count: newId });
-        });
+                // Get the current count and increment it for the new ID
+                newId = counterDoc.data().count + 1;
 
-        console.log("Awardee saved with new sequential ID: ", newId);
+                const awardeeData = {
+                    studentName: state.studentName,
+                    studentClass: state.studentClass,
+                    eventName: state.eventName,
+                    organizationName: state.schoolName,
+                    certificateDetails: {
+                        skill: state.highlight.text,
+                        attributes: state.highlight.attributes
+                    },
+                    awardedAt: serverTimestamp(),
+                    awardedBy: state.user.displayName,
+                    awardedByEmail: state.user.email,
+                    logoSrc: state.logoSrc,
+                    signatureSrc: state.signatureSrc,
+                    colors: state.colors,
+                    // Optional: You can also save the sequential ID in the document itself
+                    certificateId: newId
+                };
 
-        const verificationUrl = `https://cert.pragament.com/event-verification.html?org=${encodeURIComponent(state.schoolName)}&event=${encodeURIComponent(state.eventName)}`;
-        state.qr.text = verificationUrl;
+                // Create a reference to a new document in 'awardees' using the new sequential ID
+                const newAwardeeRef = doc(db, "awardees", newId.toString());
 
-        return verificationUrl;
+                // In the transaction, first save the new certificate...
+                transaction.set(newAwardeeRef, awardeeData);
 
-    } catch (e) {
-        console.error("Transaction failed: ", e);
-        alert("Failed to save certificate data.");
-        return null;
-    } finally {
-        setLoading(false);
-        ui.generatePdfBtn.disabled = false;
+                // ...then update the counter to the new value.
+                transaction.update(counterRef, { count: newId });
+            });
+
+            console.log("Awardee saved with new sequential ID: ", newId);
+
+            const verificationUrl = `https://cert.pragament.com/event-verification.html?org=${encodeURIComponent(state.schoolName)}&event=${encodeURIComponent(state.eventName)}`;
+            state.qr.text = verificationUrl;
+
+            return verificationUrl;
+
+        } catch (e) {
+            console.error("Transaction failed: ", e);
+            alert("Failed to save certificate data.");
+            return null;
+        } finally {
+            setLoading(false);
+            ui.generatePdfBtn.disabled = false;
+        }
     }
-}
 
     // --- Main App Logic ---
     function setLoading(isLoading) {
@@ -217,7 +239,7 @@ try {
             }
         }
     }
-    
+
     function loadCertificateFromUrl() {
         const params = new URLSearchParams(window.location.search);
         const certData = params.get('cert');
@@ -261,15 +283,15 @@ try {
         ui.certificate.style.setProperty("--cert-border-color", colors.border);
         ui.certificate.style.setProperty("--cert-shape-color", colors.shape);
         ui.certificate.style.setProperty("--cert-subtitle-color", colors.subtitle);
-        
-        const signatureHtml = signatureSrc 
-            ? `<img src="${signatureSrc}" alt="Signature" class="cert-signature-img">` 
+
+        const signatureHtml = signatureSrc
+            ? `<img src="${signatureSrc}" alt="Signature" class="cert-signature-img">`
             : `<div class="cert-signature-placeholder" style="height: 5vw;"></div>`;
 
         const genericVerificationUrl = `${window.location.origin}${window.location.pathname.replace('index.html', '')}verify.html?org=${encodeURIComponent(schoolName)}&event=${encodeURIComponent(eventName)}`;
-        const qrCodeContent = qr.text || genericVerificationUrl; 
+        const qrCodeContent = qr.text || genericVerificationUrl;
         const qrHtml = (qr.enabled && qrCodeContent) ? `<div class="cert-qr-area"><div id="certQrCode"></div><p>Scan to Verify</p></div>` : '<div class="cert-qr-area"></div>';
-        
+
         ui.certificate.innerHTML = `
             <div class="cert-border"></div>
             <div class="cert-content">
@@ -295,7 +317,7 @@ try {
 
         if (qr.enabled && qrCodeContent) {
             const qrCodeEl = document.getElementById("certQrCode");
-            if(qrCodeEl) {
+            if (qrCodeEl) {
                 qrCodeEl.innerHTML = '';
                 new QRCode(qrCodeEl, { text: qrCodeContent, width: 128, height: 128 });
             }
@@ -316,7 +338,7 @@ try {
 
     function handleInputChange(e) {
         const { id, value, type, checked } = e.target;
-        if(type === 'checkbox') {
+        if (type === 'checkbox') {
             state.qr.enabled = checked;
         } else if (id === 'highlightAttributes') {
             state.highlight.attributes = value;
@@ -353,7 +375,7 @@ try {
             reader.readAsDataURL(file);
         }
     }
-    
+
     // MODIFICATION: generatePDF function updated for new link sharing
     async function generatePDF() {
         const verificationUrl = await saveCertificateData();
@@ -390,7 +412,7 @@ try {
     ui.uploadSignatureBtn.addEventListener("click", () => ui.signatureUpload.click());
     ui.generatePdfBtn.addEventListener("click", generatePDF);
     ui.printCertificateBtn.addEventListener("click", () => window.print());
-    
+
     // MODIFICATION: Removed old share button functionality as it's now part of generatePDF
     ui.shareCertificateBtn.addEventListener("click", () => {
         if (ui.qrText.value) {
@@ -400,7 +422,7 @@ try {
                 alert("Failed to copy link. Please save the certificate first.");
             });
         } else {
-             alert("Please save the certificate first to generate a shareable link.");
+            alert("Please save the certificate first to generate a shareable link.");
         }
     });
 

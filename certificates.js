@@ -59,7 +59,7 @@ function createRowElement(id, data) {
         <td style="padding: 0.75rem;">${data.eventName || ''}</td>
         <td style="padding: 0.75rem;">${awardedDate}</td>
         <td style="padding: 0.75rem; text-align:right;">
-            <a href="view.html?id=${id}" target="_blank"><button class="btn">Open</button></a>
+            <a href="v.htm?id=${id}" target="_blank"><button class="btn">Open</button></a>
         </td>
     `;
     return item;

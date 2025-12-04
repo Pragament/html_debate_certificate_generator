@@ -55,11 +55,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Each name is a link to the details page, and the button links to the view page
             tableHtml += `
                 <tr>
-                    <td><a href="details.html?id=${doc.id}">${data.studentName}</a></td>
+                    <td><a href="v.htm?id=${doc.id}">${data.studentName}</a></td>
                     <td>${data.studentClass}</td>
                     <td>${data.eventName}</td>
                     <td>${awardedDate}</td>
-                    <td><a href="view.html?id=${doc.id}" target="_blank" class="btn btn-table">Open</a></td>
+                    <td><a href="v.htm?id=${doc.id}" target="_blank" class="btn btn-table">Open</a></td>
                 </tr>
             `;
         });

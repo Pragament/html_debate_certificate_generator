@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </tr>
                     </tbody>
                 </table>
-                <a href="view.html?id=${certificateId}" target="_blank" class="btn btn-open">Open Certificate</a>
+                <a href="v.htm?id=${certificateId}" target="_blank" class="btn btn-open">Open Certificate</a>
             `;
         } else {
             detailsContainer.innerHTML = '<h1>Verification Failed</h1><p>Certificate not found.</p>';
