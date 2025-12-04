@@ -9,10 +9,10 @@ const filterClassEl = document.getElementById('filterClass');
 
 let allAwardees = []; // To store the initial fetch for client-side filtering
 
-// Function to render the list of awardees
-function renderResults(awardees) {
-    if (awardees.length === 0) {
-        resultsContainerEl.innerHTML = '<p class="no-results">No matching awardees found.</p>';
+// Function to render the list of certTemplates
+function renderResults(certTemplates) {
+    if (certTemplates.length === 0) {
+        resultsContainerEl.innerHTML = '<p class="no-results">No matching certTemplates found.</p>';
         return;
     }
 
@@ -26,11 +26,11 @@ function renderResults(awardees) {
                 </tr>
             </thead>
             <tbody>
-                ${awardees.map(awardee => `
+                ${certTemplates.map(awardee => `
                     <tr>
                         <td>${awardee.studentName}</td>
                         <td>${awardee.studentClass}</td>
-                        <td>${awardee.awardedAt.toDate().toLocaleDateString()}</td>
+                        <td>${awardee.created.toDate().toLocaleDateString()}</td>
                     </tr>
                 `).join('')}
             </tbody>
@@ -49,7 +49,7 @@ function applyFilters() {
     if (dateFilter) {
         filteredAwardees = filteredAwardees.filter(awardee => {
             // Compare year, month, and day, ignoring time
-            return awardee.awardedAt.toDate().toISOString().split('T')[0] === dateFilter;
+            return awardee.created.toDate().toISOString().split('T')[0] === dateFilter;
         });
     }
 
@@ -76,14 +76,14 @@ async function loadVerificationData() {
             return;
         }
 
-        certInfoEl.innerHTML = `Displaying awardees for <strong>${eventName}</strong> at <strong>${orgName}</strong>.`;
+        certInfoEl.innerHTML = `Displaying certTemplates for <strong>${eventName}</strong> at <strong>${orgName}</strong>.`;
         
-        // Query Firestore for all awardees matching the org and event
+        // Query Firestore for all certTemplates matching the org and event
         const q = query(
-            collection(db, "awardees"),
+            collection(db, "certTemplates"),
             where("organizationName", "==", orgName),
             where("eventName", "==", eventName),
-            orderBy("awardedAt", "desc")
+            orderBy("created", "desc")
         );
         
         const querySnapshot = await getDocs(q);
@@ -91,14 +91,14 @@ async function loadVerificationData() {
         allAwardees = querySnapshot.docs.map(doc => doc.data());
         
         if (querySnapshot.empty) {
-             resultsContainerEl.innerHTML = '<p class="no-results">No awardees found for this certificate.</p>';
+             resultsContainerEl.innerHTML = '<p class="no-results">No certTemplates found for this certificate.</p>';
         } else {
              renderResults(allAwardees);
         }
 
     } catch (error) {
         console.error("Error loading certificate data:", error);
-        resultsContainerEl.innerHTML = '<p class="no-results">Error: Could not load verification data. Ensure your Firestore security rules allow public reads on the "awardees" collection.</p>';
+        resultsContainerEl.innerHTML = '<p class="no-results">Error: Could not load verification data. Ensure your Firestore security rules allow public reads on the "certTemplates" collection.</p>';
     }
 }
 

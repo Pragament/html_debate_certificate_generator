@@ -1,44 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Certificate Generator</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Pinyon+Script&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Pinyon+Script&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container" id="container">
         <div class="left-panel" id="left-panel">
             <h1 class="page-header">Certificate Generator</h1>
 
             <div id="authSection" class="auth-section"></div>
-            
+
             <div class="panel-container">
                 <div class="panel">
                     <h3>General Information</h3>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="studentName">Student Name (Awardee)</label>
                         <input type="text" id="studentName" placeholder="Enter student's full name">
                     </div>
                     <div class="form-group">
                         <label for="studentClass">Class / Grade</label>
                         <input type="text" id="studentClass" placeholder="e.g., 10th Grade">
-                    </div>
+                    </div> -->
                     <div class="form-group">
                         <label for="schoolName">School / Organization Name</label>
                         <input type="text" id="schoolName" value="DELHI SECONDARY SCHOOL">
                     </div>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="eventName">Event Name</label>
                         <input type="text" id="eventName" value="Fitness Challenge">
-                    </div>
+                    </div> -->
                 </div>
 
                 <div class="panel">
@@ -47,17 +51,18 @@
                         <label>Select Highlight</label>
                         <div class="highlight-options" id="highlightOptions"></div>
                     </div>
-                     <div class="form-group">
+                    <div class="form-group">
                         <label for="certTitle">Title</label>
                         <textarea id="certTitle" placeholder="Certificate of Excellence"></textarea>
                     </div>
-                     <div class="form-group">
+                    <div class="form-group">
                         <label for="certSubtitle">Subtitle</label>
                         <textarea id="certSubtitle" placeholder="For Curiosity and Discovery"></textarea>
                     </div>
-                     <div class="form-group">
+                    <div class="form-group">
                         <label for="highlightAttributes">Attributes</label>
-                        <textarea id="highlightAttributes" placeholder="Describe specific attributes or achievements"></textarea>
+                        <textarea id="highlightAttributes"
+                            placeholder="Describe specific attributes or achievements"></textarea>
                     </div>
                 </div>
 
@@ -82,7 +87,8 @@
                     <div class="form-group">
                         <label for="logoUpload">Organization Logo</label>
                         <div class="logo-upload">
-                            <div class="logo-preview"><img id="logoPreview" src="https://i.ibb.co/bF03NC6/logo-removebg-preview.png" alt="Logo Preview"></div>
+                            <div class="logo-preview"><img id="logoPreview"
+                                    src="https://i.ibb.co/bF03NC6/logo-removebg-preview.png" alt="Logo Preview"></div>
                             <input type="file" id="logoUpload" accept="image/*" class="hidden">
                             <button type="button" id="uploadLogoBtn"><i class="fas fa-upload"></i> Upload Logo</button>
                         </div>
@@ -90,12 +96,14 @@
                     <div class="form-group">
                         <label for="signatureUpload">Signature</label>
                         <div class="signature-upload">
-                            <div class="signature-preview"><img id="signaturePreview" src="" alt="Signature Preview" class="hidden"></div>
+                            <div class="signature-preview"><img id="signaturePreview" src="" alt="Signature Preview"
+                                    class="hidden"></div>
                             <input type="file" id="signatureUpload" accept="image/*" class="hidden">
-                            <button type="button" id="uploadSignatureBtn"><i class="fas fa-upload"></i> Upload Signature</button>
+                            <button type="button" id="uploadSignatureBtn"><i class="fas fa-upload"></i> Upload
+                                Signature</button>
                         </div>
                     </div>
-                     <div class="form-group qr-toggle-group">
+                    <div class="form-group qr-toggle-group">
                         <label for="qrToggle">Include QR Code</label>
                         <input type="checkbox" id="qrToggle" class="toggle-switch" checked>
                     </div>
@@ -122,7 +130,8 @@
             </div>
         </div>
     </div>
-    
+
     <script src="script.js" type="module"></script>
 </body>
+
 </html>

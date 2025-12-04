@@ -4,15 +4,15 @@ import { db } from './firebase-config.js';
 document.addEventListener('DOMContentLoaded', async () => {
     const certificateEl = document.getElementById('certificate');
     const params = new URLSearchParams(window.location.search);
-    const certificateId = params.get('id');
+    const templateID = params.get('id');
 
-    if (!certificateId) {
+    if (!templateID) {
         certificateEl.innerHTML = '<p style="text-align:center; width:100%;">Error: No Certificate ID found in URL.</p>';
         return;
     }
 
     try {
-        const docRef = doc(db, "awardees", certificateId);
+        const docRef = doc(db, "certTemplates", templateID);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const eventName = state.eventName || "Fitness Challenge";
         
         // Ensure highlight has correct structure, matching script.js
-        const highlight = state.certificateDetails || { 
+        const highlight = state.templateDetails || { 
             skill: "Achievement", 
             attributes: "" 
         };
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // QR code logic
         // MODIFICATION: The QR code URL should now point to details.html for consistency
-        const verificationUrl = `${window.location.origin}${window.location.pathname.replace('view.html', '')}v.htm?id=${certificateId}`;
+        const verificationUrl = `${window.location.origin}${window.location.pathname.replace('view.html', '')}v.htm?id=${templateID}`;
         const qrCodeContent = verificationUrl;
 
         certificateEl.style.setProperty("--cert-border-color", colors.border);

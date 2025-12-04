@@ -10,9 +10,9 @@ try {
         schoolName: document.getElementById("schoolName"),
         certTitle: document.getElementById("certTitle"),
         certSubtitle: document.getElementById("certSubtitle"),
-        eventName: document.getElementById("eventName"),
-        studentName: document.getElementById("studentName"),
-        studentClass: document.getElementById("studentClass"),
+        //eventName: document.getElementById("eventName"),
+        //studentName: document.getElementById("studentName"),
+        //studentClass: document.getElementById("studentClass"),
         highlightAttributes: document.getElementById("highlightAttributes"),
         logoUpload: document.getElementById("logoUpload"),
         signatureUpload: document.getElementById("signatureUpload"),
@@ -41,13 +41,15 @@ try {
         isAuthReady: false,
         loading: false,
         schoolName: "DELHI SECONDARY SCHOOL",
-        eventName: "Fitness Challenge",
-        studentName: "",
-        studentClass: "",
+        //eventName: "Fitness Challenge",
+        //studentName: "",
+        //studentClass: "",
         highlight: {
-            id: 6,
-            text: "Push-up Pro 🏅",
-            attributes: "CHEST  | SHOULDERS  | TRICEPS 💪 | CORE ",
+            id: 18,
+            text: "⭐ Star Performer",
+            attributes: "HIGH ACHIEVER 📊 | LEADER 🧭 | ACTIVE PARTICIPANT 🎯 | ENTHUSIASTIC LEARNER ✨ | ROLE MODEL 👑",
+            certTitle: "Certificate of Excellence",
+            certSubtitle: "Awarded to a Star Performer",
         },
         logoSrc: "https://i.ibb.co/bF03NC6/logo-removebg-preview.png",
         signatureSrc: "",
@@ -321,7 +323,7 @@ try {
             return null;
         }
 
-        if (!state.studentName.trim()) {
+        /*if (!state.studentName.trim()) {
             const nameFromPrompt = prompt("Please enter the awardee's full name to save and generate the certificate:");
             if (nameFromPrompt && nameFromPrompt.trim()) {
                 state.studentName = nameFromPrompt.trim();
@@ -335,14 +337,14 @@ try {
         if (!state.studentClass.trim()) {
             alert("Please enter the student's class.");
             return null;
-        }
+        }*/
 
         setLoading(true);
         ui.generatePdfBtn.disabled = true;
 
         try {
             // This is the reference to the counter document you created
-            const counterRef = doc(db, "counters", "awardeeCounter");
+            const counterRef = doc(db, "counters", "certTemplateCounter");
             let newId;
 
             // A transaction ensures that even if two users click save at the same time,
@@ -357,26 +359,28 @@ try {
                 newId = counterDoc.data().count + 1;
 
                 const awardeeData = {
-                    studentName: state.studentName,
-                    studentClass: state.studentClass,
-                    eventName: state.eventName,
+                    //studentName: state.studentName,
+                    //studentClass: state.studentClass,
+                    //eventName: state.eventName,
                     organizationName: state.schoolName,
-                    certificateDetails: {
+                    templateDetails: {
                         skill: state.highlight.text,
-                        attributes: state.highlight.attributes
+                        attributes: state.highlight.attributes,
+                        certTitle: state.highlight.certTitle,
+                        certSubtitle: state.highlight.certSubtitle
                     },
-                    awardedAt: serverTimestamp(),
-                    awardedBy: state.user.displayName,
-                    awardedByEmail: state.user.email,
+                    created: serverTimestamp(),
+                    author: state.user.displayName,
+                    authorEmail: state.user.email,
                     logoSrc: state.logoSrc,
                     signatureSrc: state.signatureSrc,
                     colors: state.colors,
                     // Optional: You can also save the sequential ID in the document itself
-                    certificateId: newId
+                    templateID: newId
                 };
 
-                // Create a reference to a new document in 'awardees' using the new sequential ID
-                const newAwardeeRef = doc(db, "awardees", newId.toString());
+                // Create a reference to a new document in 'certTemplates' using the new sequential ID
+                const newAwardeeRef = doc(db, "certTemplates", newId.toString());
 
                 // In the transaction, first save the new certificate...
                 transaction.set(newAwardeeRef, awardeeData);
@@ -464,9 +468,9 @@ try {
         renderHighlightOptions();
         renderColorOptions();
         ui.schoolName.value = state.schoolName;
-        ui.eventName.value = state.eventName;
-        ui.studentName.value = state.studentName;
-        ui.studentClass.value = state.studentClass;
+        //ui.eventName.value = state.eventName;
+        //ui.studentName.value = state.studentName;
+        //ui.studentClass.value = state.studentClass;
         ui.highlightAttributes.value = state.highlight.attributes;
         ui.logoPreview.src = state.logoSrc;
         if (state.signatureSrc) {
@@ -481,7 +485,7 @@ try {
     }
 
     function renderCertificatePreview() {
-        const { schoolName, eventName, highlight, logoSrc, signatureSrc, colors, studentName, qr } = state;
+        const { schoolName, eventName, highlight, logoSrc, signatureSrc, colors, qr } = state;
         ui.certificate.style.setProperty("--cert-border-color", colors.border);
         ui.certificate.style.setProperty("--cert-shape-color", colors.shape);
         ui.certificate.style.setProperty("--cert-subtitle-color", colors.subtitle);
@@ -602,7 +606,7 @@ try {
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = pdf.internal.pageSize.getHeight();
                 pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-                pdf.save(`${state.studentName}_${state.eventName}_Certificate.pdf`);
+                pdf.save(`${state.highlight.certTitle}_Certificate.pdf`);
                 // Optional: redirect after saving
                 // window.location.href = 'certificates.html';
             }, 200);

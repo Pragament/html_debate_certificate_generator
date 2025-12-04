@@ -4,20 +4,20 @@ import { db } from './firebase-config.js';
 document.addEventListener('DOMContentLoaded', async () => {
     const detailsContainer = document.getElementById('detailsContainer');
     const params = new URLSearchParams(window.location.search);
-    const certificateId = params.get('id');
+    const templateID = params.get('id');
 
-    if (!certificateId) {
+    if (!templateID) {
         detailsContainer.innerHTML = '<h1>Error: No Certificate ID provided.</h1>';
         return;
     }
 
     try {
-        const docRef = doc(db, "awardees", certificateId);
+        const docRef = doc(db, "certTemplates", templateID);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
             const data = docSnap.data();
-            const awardedDate = data.awardedAt?.toDate ? data.awardedAt.toDate().toLocaleDateString() : 'N/A';
+            const awardedDate = data.created?.toDate ? data.created.toDate().toLocaleDateString() : 'N/A';
 
             detailsContainer.innerHTML = `
                 <h2>Certificate Verification</h2>
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </tr>
                     </tbody>
                 </table>
-                <a href="v.htm?id=${certificateId}" target="_blank" class="btn btn-open">Open Certificate</a>
+                <a href="v.htm?id=${templateID}" target="_blank" class="btn btn-open">Open Certificate</a>
             `;
         } else {
             detailsContainer.innerHTML = '<h1>Verification Failed</h1><p>Certificate not found.</p>';
