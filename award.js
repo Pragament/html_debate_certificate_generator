@@ -33,13 +33,13 @@ saveBtn.addEventListener('click', async () => {
     try {
         saveBtn.disabled = true;
         status('Saving...');
-        await addDoc(collection(db, 'awardees'), {
+        await addDoc(collection(db, 'certTemplates'), {
             studentName,
             studentClass,
             organizationName,
             eventName,
-            certificateDetails: { skill, attributes },
-            awardedAt: serverTimestamp(),
+            templateDetails: { skill, attributes },
+            created: serverTimestamp(),
         });
         status('Saved. Redirecting to list...');
         window.location.href = 'certificates.html';

@@ -51,7 +51,7 @@ function createRowElement(id, data) {
     const item = document.createElement('tr');
     item.style.borderBottom = '1px solid var(--border-color)';
     
-    const awardedDate = data.awardedAt?.toDate ? data.awardedAt.toDate().toLocaleDateString() : 'N/A';
+    const awardedDate = data.created?.toDate ? data.created.toDate().toLocaleDateString() : 'N/A';
 
     item.innerHTML = `
         <td style="padding: 0.75rem;"><strong>${data.studentName || ''}</strong></td>
@@ -75,8 +75,8 @@ function applyFilters() {
 
     if (dateFilter) {
         filtered = filtered.filter(({ data }) => {
-            if (!data.awardedAt?.toDate) return false;
-            return data.awardedAt.toDate().toISOString().split('T')[0] === dateFilter;
+            if (!data.created?.toDate) return false;
+            return data.created.toDate().toISOString().split('T')[0] === dateFilter;
         });
     }
 
@@ -99,7 +99,7 @@ function applyFilters() {
 // Loads the initial list of certificates from Firestore
 async function loadCertificates() {
     certListEl.innerHTML = '<div class="loader"></div>';
-    const q = query(collection(db, 'awardees'), orderBy('awardedAt', 'desc'), limit(100)); // Increased limit
+    const q = query(collection(db, 'certTemplates'), orderBy('created', 'desc'), limit(100)); // Increased limit
     const snap = await getDocs(q);
     
     allCertificates = snap.docs.map(doc => ({ id: doc.id, data: doc.data() }));

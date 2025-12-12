@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         const q = query(
-            collection(db, "awardees"),
+            collection(db, "certTemplates"),
             where("organizationName", "==", orgName),
             where("eventName", "==", eventName),
             orderBy("studentName", "asc") // Order alphabetically by name
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const querySnapshot = await getDocs(q);
         
         if (querySnapshot.empty) {
-            resultsContainerEl.innerHTML = '<p>No awardees found for this event.</p>';
+            resultsContainerEl.innerHTML = '<p>No certTemplates found for this event.</p>';
             return;
         }
 
@@ -51,11 +51,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         querySnapshot.forEach(doc => {
             const data = doc.data();
-            const awardedDate = data.awardedAt?.toDate ? data.awardedAt.toDate().toLocaleDateString() : 'N/A';
+            const awardedDate = data.created?.toDate ? data.created.toDate().toLocaleDateString() : 'N/A';
             // Each name is a link to the details page, and the button links to the view page
             tableHtml += `
                 <tr>
-                    <td><a href="v.htm?id=${doc.id}">${data.studentName}</a></td>
+                    <td><a href="details.html?id=${doc.id}">${data.studentName}</a></td>
                     <td>${data.studentClass}</td>
                     <td>${data.eventName}</td>
                     <td>${awardedDate}</td>

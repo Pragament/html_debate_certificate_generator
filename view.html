@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Certificate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Pinyon+Script&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Styles for the dedicated view page */
+        body {
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            background-color: var(--bg-color);
+        }
+        .certificate-wrapper {
+            width: 100%;
+            /* MODIFIED: Reduced max-width for a better fit on screen */
+            max-width: 950px; 
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate-wrapper">
+        <div class="certificate" id="certificate">
+            <div class="loader"></div>
+        </div>
+    </div>
+    
+    <script src="view.js" type="module"></script>
+</body>
+</html>
