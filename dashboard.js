@@ -258,7 +258,7 @@ async function loadTemplates() {
         ui.templatesContainer.querySelectorAll('button[data-template-id]').forEach(btn => {
             btn.addEventListener('click', () => {
                 const templateDocId = btn.getAttribute('data-template-id');
-                window.location.href = `template-detail.html?templateDocId=${encodeURIComponent(templateDocId)}`;
+                window.location.href = `v.htm?id=${encodeURIComponent(templateDocId)}`;
             });
         });
     } catch (e) {

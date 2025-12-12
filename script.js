@@ -319,8 +319,12 @@ try {
         state.user = user;
         state.isAuthReady = true;
 
-        // After login, redirect certificate creators to the dashboard
-        if (user && window.location.pathname.endsWith('index.html')) {
+        const params = new URLSearchParams(window.location.search);
+        const isExplicitEditor = params.get('editor') === '1';
+
+        // After login, redirect certificate creators to the dashboard,
+        // except when the user explicitly opened the editor via ?editor=1
+        if (user && window.location.pathname.endsWith('index.html') && !isExplicitEditor) {
             window.location.href = 'dashboard.html';
             return;
         }
@@ -434,9 +438,10 @@ try {
                     canvas.width = width;
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, width, height);
                     ctx.drawImage(img, 0, 0, width, height);
-                    // Use PNG for lossless or JPEG for higher compression; here JPEG with decent quality
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    // Use PNG to preserve transparency while still resizing to a smaller image
+                    const dataUrl = canvas.toDataURL('image/png');
                     resolve(dataUrl);
                 };
                 img.onerror = reject;

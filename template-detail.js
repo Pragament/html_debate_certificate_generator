@@ -28,7 +28,7 @@ let awards = [];
 
 function getTemplateDocIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
-    return params.get('templateDocId');
+    return params.get('id');
 }
 
 function applyFiltersAndSort() {
