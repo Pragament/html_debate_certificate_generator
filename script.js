@@ -331,11 +331,17 @@ try {
 
         renderAuthUI();
         renderApp();
+        if (user) {
+            loadUserAssets();  // This will populate dropdowns + update preview
+        }
     });
 
     // --- Firestore ---
     async function loadUserAssets() {
-        if (!state.user) return;
+        if (!state.user) {
+            console.log("No authenticated user");
+            return;
+        }
         try {
             const logosQ = query(
                 collection(db, 'userLogos'),
@@ -372,8 +378,22 @@ try {
             });
 
             renderAssetSelectors();
+            // Auto-apply previously selected logo/signature if it still exists
+            if (state.logoId) {
+                const foundLogo = state.userLogos.find(l => l.id === state.logoId);
+                if (foundLogo) state.logoSrc = foundLogo.dataUrl;
+            }
+            if (state.signatureId) {
+                const foundSig = state.userSignatures.find(s => s.id === state.signatureId);
+                if (foundSig) state.signatureSrc = foundSig.dataUrl;
+            }
+            // ADD THIS LINE: Re-render the preview with potentially updated assets
+            renderApp();
         } catch (e) {
-            console.error('Error loading user assets:', e);
+            console.error("Firestore error:", e);
+            if (e.code === 'permission-denied') {
+                alert("Permission denied: Check Firestore security rules!");
+            }
         }
     }
 
@@ -820,9 +840,9 @@ try {
 
     // Initial setup
     loadCertificateFromUrl();
-    if (state.user) {
-        loadUserAssets();
-    }
+    // if (state.user) {
+    //     loadUserAssets();
+    // }
     renderApp();
 
 } catch (error) {
